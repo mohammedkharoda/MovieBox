@@ -1,9 +1,23 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/splide/dist/css/splide.min.css";
+import Image from "next/image";
+import Navbar from "@/components/Navbar";
+import { assets } from "@/public/assets";
+
+interface Movie {
+  id: number;
+  backdrop_path: string | null;
+  poster_path: string | null;
+  title: string;
+  overview: string;
+  release_date: string;
+  vote_average: number;
+}
 
 const MovieDetails = () => {
-  const [movieData, setMovieData] = useState(null);
+  const [movieData, setMovieData] = useState<Movie[] | null>(null);
 
   useEffect(() => {
     async function fetchMovieData() {
@@ -17,13 +31,13 @@ const MovieDetails = () => {
 
       try {
         const response = await fetch(
-          "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
+          "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
           options,
         );
 
         if (response.ok) {
           const responseData = await response.json();
-          setMovieData(responseData);
+          setMovieData(responseData.results);
         } else {
           console.error("Failed to fetch data");
         }
@@ -35,44 +49,66 @@ const MovieDetails = () => {
     fetchMovieData();
   }, []);
 
+  const splideOptions = {
+    type: "loop",
+    autoplay: true,
+    perPage: 1,
+    perMove: 1,
+    pagination: false,
+    navigation: false,
+    arrows: false,
+    direction: "ttb",
+    height: "100vh",
+    wheel: true,
+  };
+
   return (
-    <div className="w-full">
-      <div className="p-4 md:pt-8 flex flex-col md:flex-col items-center max-w-6xl">
+    <div className="relative">
+      {/*@ts-ignore*/}
+      <Splide options={splideOptions}>
         {movieData &&
-          movieData.results &&
-          movieData.results.length > 0 &&
-          movieData.results.map((movie: any) => (
-            <div key={movie.id} className="mb-6">
-              <img
-                src={`https://image.tmdb.org/t/p/original/${
-                  movie.backdrop_path || movie.poster_path
-                }`}
-                alt={movie.title}
-                className="rounded-t-lg group-hover:opacity-80 transition-opacity duration-200"
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
-                  width: "auto",
-                }}
-              />
-              <div className="p-2">
-                <h2 className="text-lg mb-3 font-bold">{movie.title}</h2>
-                <p className="text-lg mb-3">
-                  <span className="font-semibold mr-1">Overview:</span>
-                  {movie.overview}
-                </p>
-                <p className="mb-3">
-                  <span className="font-semibold mr-1">Date Released:</span>
-                  {movie.release_date}
-                </p>
-                <p className="mb-3">
-                  <span className="font-semibold mr-1">Rating:</span>
-                  {movie.vote_count}
-                </p>
+          movieData.length > 0 &&
+          movieData.map((movie) => (
+            <SplideSlide key={movie.id}>
+              <div className="relative h-full w-full">
+                <Image
+                  src={`https://image.tmdb.org/t/p/original/${
+                    movie?.backdrop_path || movie?.poster_path
+                  }`}
+                  alt={movie.title}
+                  style={{
+                    objectFit: "cover",
+                  }}
+                  fill
+                />
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60"></div>
               </div>
-            </div>
+              <div className="p-2 absolute top-[40%] left-0 text-white">
+                <h2 className="text-[48px] font-bold leading-[56px]">
+                  {movie.title}
+                </h2>
+                <div className="w-[50%]">
+                  <p className="text-lg my-3 text-[20px] w-full">
+                    {movie.overview}
+                  </p>
+                </div>
+                <div className="flex gap-5 items-center">
+                  <Image
+                    src={assets.icon.IMDB}
+                    alt="imdb"
+                    width={50}
+                    height={50}
+                  />
+                  <div>
+                    <p className="text-[16px] font-medium">
+                      {movie.vote_average}/10
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </SplideSlide>
           ))}
-      </div>
+      </Splide>
     </div>
   );
 };
