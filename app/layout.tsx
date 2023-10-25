@@ -1,3 +1,4 @@
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
@@ -16,7 +17,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={dm_sans.className}>{children}</body>
+      <body className={dm_sans.className}>
+        <>
+          <Navbar />
+          {children}
+        </>
+      </body>
     </html>
   );
 }

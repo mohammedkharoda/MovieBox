@@ -1,8 +1,13 @@
 import { create } from "zustand";
 
-const useMovieParamsStore = create((set) => ({
+export type StateType = {
+  params: any; 
+  setParams: (params: any) => void; 
+};
+
+const useMovieParamsStore = create<StateType>((set) => ({
     params: null,
-    setParams: (params) => set({ params }),
+    setParams: (params:any) => set({ params }),
 }));
 
 export default useMovieParamsStore;
