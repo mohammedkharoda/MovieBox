@@ -7,14 +7,14 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 interface Movie {
   id: number;
   backdrop_path: string | null;
-  title: string;
-  release_date: string;
+  name: string;
+  first_air_date: string;
   vote_average: number;
   genre_ids: number[];
   // Add other properties if needed
 }
-const UpcomingMovieCard = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+const TvSeries = () => {
+  const [series, setSeries] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const splideOptions = {
     type: "loop",
@@ -50,13 +50,13 @@ const UpcomingMovieCard = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          "https://api.themoviedb.org/3/movie/upcoming?language=en-IN&page=1",
+          "https://api.themoviedb.org/3/trending/tv/week?language=en-IN",
           options
         );
 
         if (response.ok) {
           const responseData = await response.json();
-          setMovies(responseData.results);
+          setSeries(responseData.results);
         } else {
           console.error("Failed to fetch data");
         }
@@ -72,7 +72,7 @@ const UpcomingMovieCard = () => {
 
   return (
     <div className="flex flex-col px-10 mt-[70px]">
-      <div className="font-sans text-[36px] font-black">Upcoming Movie</div>
+      <div className="font-sans text-[36px] font-black">Trending Tv Shows</div>
       {/*@ts-ignore*/}
       {isLoading ? (
         <div className="w-full h-[280px]">
@@ -87,13 +87,13 @@ const UpcomingMovieCard = () => {
       ) : (
         // @ts-ignore
         <Splide options={splideOptions}>
-          {movies.map((movie) => (
-            <SplideSlide key={movie.id}>
+          {series.map((serie) => (
+            <SplideSlide key={serie.id}>
               <div className="flex flex-col ">
                 <div className="h-[370px] w-full relative mt-5">
                   <Image
-                    src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-                    alt={movie.title}
+                    src={`https://image.tmdb.org/t/p/original/${serie.backdrop_path}`}
+                    alt={serie.name}
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
@@ -101,9 +101,9 @@ const UpcomingMovieCard = () => {
                   />
                 </div>
                 <div className="mt-2 flex flex-col gap-2">
-                  <p>{formatDate(movie.release_date)}</p>
-                  <p className="text-xl font-bold break-words w-[350px] capitalize">
-                    {movie.title}
+                  <p>{formatDate(serie.first_air_date)}</p>
+                  <p className="text-xl font-bold break-words w-[450px] capitalize">
+                    {serie.name}
                   </p>
                   <div className="flex items-center gap-5">
                     <Image
@@ -111,10 +111,9 @@ const UpcomingMovieCard = () => {
                       alt="IMDB"
                       width={50}
                       height={50}
-                      className="rounded-xl"
                     />
                     <p className="text-[16px] text-[#000] font-normal">
-                      {movie.vote_average}/10
+                      {serie.vote_average.toFixed(1)}/10
                     </p>
                   </div>
                 </div>
@@ -127,4 +126,4 @@ const UpcomingMovieCard = () => {
   );
 };
 
-export default UpcomingMovieCard;
+export default TvSeries;

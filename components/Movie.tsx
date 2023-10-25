@@ -5,6 +5,7 @@ import "@splidejs/splide/dist/css/splide.min.css";
 import Image from "next/image";
 import Navbar from "@/components/Navbar";
 import { assets } from "@/public/assets";
+import { useRouter } from "next/navigation";
 
 interface Movie {
   id: number;
@@ -31,8 +32,8 @@ const MovieDetails = () => {
 
       try {
         const response = await fetch(
-          "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
-          options,
+          "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
+          options
         );
 
         if (response.ok) {
@@ -59,7 +60,11 @@ const MovieDetails = () => {
     arrows: false,
     direction: "ttb",
     height: "100vh",
-    wheel: true,
+  };
+
+  const router = useRouter();
+  const handleResultClick = (id: any) => {
+    router.push(`/movie/${id}`);
   };
 
   return (
@@ -67,7 +72,7 @@ const MovieDetails = () => {
       {/*@ts-ignore*/}
       <Splide options={splideOptions}>
         {movieData &&
-          movieData.length > 0 &&
+          movieData?.length > 0 &&
           movieData.map((movie) => (
             <SplideSlide key={movie.id}>
               <div className="relative h-full w-full">
@@ -81,9 +86,9 @@ const MovieDetails = () => {
                   }}
                   fill
                 />
-                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60"></div>
+                <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60" />
               </div>
-              <div className="p-2 absolute top-[40%] left-0 text-white">
+              <div className="px-6 absolute top-[40%] left-0 text-white">
                 <h2 className="text-[48px] font-bold leading-[56px]">
                   {movie.title}
                 </h2>
@@ -105,6 +110,11 @@ const MovieDetails = () => {
                     </p>
                   </div>
                 </div>
+                <button onClick={() => handleResultClick(movie.id)}>
+                  <p className="border-2 p-2 rounded-lg mt-4 hover:shadow-lg shadow-cyan-500/50 text-[20px] hover:bg-cyan-900/60 hover:text-white">
+                    Explore More
+                  </p>
+                </button>
               </div>
             </SplideSlide>
           ))}
