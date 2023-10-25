@@ -13,9 +13,9 @@ interface Movie {
   genre_ids: number[];
   // Add other properties if needed
 }
-const UpcomingMovieCard = () => {
+const NewArrival = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loading, setIsLoading] = useState<boolean>(true);
   const splideOptions = {
     type: "loop",
     autoplay: true,
@@ -50,7 +50,7 @@ const UpcomingMovieCard = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          "https://api.themoviedb.org/3/movie/upcoming?language=en-IN&page=1",
+          "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
           options
         );
 
@@ -72,9 +72,9 @@ const UpcomingMovieCard = () => {
 
   return (
     <div className="flex flex-col px-10 mt-[70px]">
-      <div className="font-sans text-[36px] font-black">Upcoming Movie</div>
+      <div className="font-sans text-[36px] font-black">New Arrivals</div>
       {/*@ts-ignore*/}
-      {isLoading ? (
+      {loading ? (
         <div className="w-full h-[280px]">
           <Image
             src={assets.icon.SPINNER}
@@ -87,12 +87,12 @@ const UpcomingMovieCard = () => {
       ) : (
         // @ts-ignore
         <Splide options={splideOptions}>
-          {movies.map((movie) => (
+          {movies?.map((movie) => (
             <SplideSlide key={movie.id}>
               <div className="flex flex-col ">
                 <div className="h-[370px] w-full relative mt-5">
                   <Image
-                    src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
+                    src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`}
                     alt={movie.title}
                     layout="fill"
                     objectFit="cover"
@@ -101,9 +101,9 @@ const UpcomingMovieCard = () => {
                   />
                 </div>
                 <div className="mt-2 flex flex-col gap-2">
-                  <p>{formatDate(movie.release_date)}</p>
-                  <p className="text-xl font-bold break-words w-[350px] capitalize">
-                    {movie.title}
+                  <p>{formatDate(movie?.release_date)}</p>
+                  <p className="text-xl font-bold break-words w-[450px] capitalize">
+                    {movie?.title}
                   </p>
                   <div className="flex items-center gap-5">
                     <Image
@@ -111,10 +111,9 @@ const UpcomingMovieCard = () => {
                       alt="IMDB"
                       width={50}
                       height={50}
-                      className="rounded-xl"
                     />
-                    <p className="text-[16px] text-[#000] font-normal">
-                      {movie.vote_average}/10
+                    <p className="text-[16px] text-[#000] ">
+                      {movie?.vote_average.toFixed(1)}/10
                     </p>
                   </div>
                 </div>
@@ -127,4 +126,4 @@ const UpcomingMovieCard = () => {
   );
 };
 
-export default UpcomingMovieCard;
+export default NewArrival;

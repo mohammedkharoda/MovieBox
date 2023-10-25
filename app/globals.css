@@ -10,3 +10,27 @@
   pointer-events: none;
 }
 
+.swiper-slide {
+  width: 20% !important;
+  padding-left: 5%;
+}
+
+.custom-prev-icon, .custom-next-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 24px;
+}
+
+.custom-prev-icon {
+  left: 10px;
+}
+
+.custom-next-icon {
+  right: 10px;
+}
