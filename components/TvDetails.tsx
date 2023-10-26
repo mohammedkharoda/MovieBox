@@ -1,15 +1,16 @@
 "use client";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { RiMovie2Line } from "react-icons/ri";
-import { HiMiniLanguage } from "react-icons/hi2";
-import { BiTime } from "react-icons/bi";
 import { assets } from "@/public/assets";
+import { useTvParamsStore } from "@/store/store";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { BsPen } from "react-icons/bs";
+import { HiMiniLanguage } from "react-icons/hi2";
 import { LiaImdb } from "react-icons/lia";
-import { useMovieParamsStore } from "@/store/store";
-const MovieDetails = () => {
-  const [movieData, setMovieData] = useState<any>(null);
-  const params = useMovieParamsStore((state) => state.params);
+import { RiMovie2Line } from "react-icons/ri";
+const TvDetails = () => {
+  const [seriesData, setseriesData] = useState<any>(null);
+  const params = useTvParamsStore((state) => state.params);
+  console.log(params, "inisde component");
 
   useEffect(() => {
     if (params) {
@@ -21,17 +22,14 @@ const MovieDetails = () => {
         },
       };
 
-      fetch(
-        `https://api.themoviedb.org/3/movie/${params}?language=en-US`,
-        options
-      )
+      fetch(`https://api.themoviedb.org/3/tv/${params}?language=en-US`, options)
         .then((response) => response.json())
-        .then((data) => setMovieData(data))
+        .then((data) => setseriesData(data))
         .catch((err) => console.error(err));
     }
   }, [params]);
 
-  if (!movieData) {
+  if (!seriesData) {
     return <div>Loading...</div>;
   }
 
@@ -60,11 +58,11 @@ const MovieDetails = () => {
           objectFit="contain"
           loading="lazy"
           src={
-            movieData?.poster_path
-              ? `https://image.tmdb.org/t/p/original${movieData?.poster_path}`
+            seriesData?.poster_path
+              ? `https://image.tmdb.org/t/p/original${seriesData?.poster_path}`
               : assets.image.DUMMY
           }
-          alt={movieData?.title}
+          alt={seriesData?.title}
           className="drop-shadow-2xl "
         />
       </div>
@@ -75,9 +73,9 @@ const MovieDetails = () => {
         </button>
       </div>
       <div className="col-start-2 row-start-1 flex flex-col gap-4">
-        <div className="text-4xl font-bold">{movieData?.title}</div>
+        <div className="text-4xl font-bold">{seriesData?.name}</div>
         <div className="flex gap-4">
-          {movieData?.genres?.map((genre: any, index: number) => (
+          {seriesData?.genres?.map((genre: any, index: number) => (
             <div key={index}>
               <p className="text-[15px] text-gray-800/80 uppercase">
                 {genre?.name}
@@ -85,19 +83,21 @@ const MovieDetails = () => {
             </div>
           ))}
         </div>
-        <div className="text-[20px] text-gray-800/80">{movieData?.tagline}</div>
+        <div className="text-[20px] text-gray-800/80">
+          {seriesData?.tagline}
+        </div>
         <div className="flex flex-col gap-2">
           <p className="uppercase text-[20px] text-[#000] font-semibold">
             Storyline
           </p>
-          <div className="text-[18px]">{movieData?.overview}</div>
+          <div className="text-[18px]">{seriesData?.overview}</div>
         </div>
         <div className="flex flex-row w-fit gap-10  ">
           <div className="flex flex-col w-fit gap-2">
             <div className="text-[20px] font-semibold mt-3">
               Production Company
             </div>
-            {movieData?.production_companies?.map(
+            {seriesData?.production_companies?.map(
               (company: any, index: number) => (
                 <p
                   className="font-bold text-[25px] uppercase underline underline-offset-8"
@@ -113,7 +113,7 @@ const MovieDetails = () => {
               <HiMiniLanguage size={26} />
               <p className="font-semibold text-[20px]">Languages</p>
             </div>
-            {movieData?.spoken_languages?.map(
+            {seriesData?.spoken_languages?.map(
               (language: any, index: number) => (
                 <div key={index}>
                   <p className="font-bold text-[28px]">{language?.name}</p>
@@ -123,12 +123,43 @@ const MovieDetails = () => {
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <BiTime size={26} />
-              <p className="text-[20px] font-semibold">Runtime</p>
+              <BsPen size={26} />
+              <div className="font-semibold text-[20px]">Written By</div>
             </div>
-            <p className="text-[18px] font-bold text-center">
-              {convertToHoursAndMinutes(movieData?.runtime)}
-            </p>
+            <div>
+              {seriesData?.created_by.length > 0 ? (
+                seriesData?.created_by?.map((creator: any, index: number) => (
+                  <div key={index}>
+                    <p className="font-bold text-[20px] text-[#000] capitalize">
+                      {creator?.name}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="capitalize font-sans text-[20px] font-bold text-[#000]">
+                  anonymous
+                </p>
+              )}
+            </div>
+          </div>
+          <div>
+            <div className="font-semibold text-[20px]">Streaming On</div>
+            <div className="w-[150px] h-[150px] ">
+              <div className="flex gap-4 mt-2 flex-wrap">
+                {seriesData?.networks
+                  ?.slice(0, 3)
+                  .map((network: any, index: number) => (
+                    <div key={index}>
+                      <Image
+                        src={`https://image.tmdb.org/t/p/original${network?.logo_path}`}
+                        alt={network.name}
+                        height={300}
+                        width={300}
+                      />
+                    </div>
+                  ))}
+              </div>
+            </div>
           </div>
           <div className="gap-2 flex flex-col">
             <div className="flex items-center gap-2">
@@ -136,7 +167,7 @@ const MovieDetails = () => {
               <div className="text-[20px] font-semibold">Rating</div>
             </div>
             <div className="text-[20px] font-bold">
-              {movieData?.vote_average?.toFixed(1)}
+              {seriesData?.vote_average?.toFixed(1)}
             </div>
           </div>
         </div>
@@ -145,4 +176,4 @@ const MovieDetails = () => {
   );
 };
 
-export default MovieDetails;
+export default TvDetails;

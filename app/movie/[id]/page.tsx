@@ -1,7 +1,7 @@
-'use client'
+"use client";
 import MovieDetails from "@/components/MovieDetails";
-import Navbar from "@/components/Navbar";
-import useMovieParamsStore, { StateType } from "@/store/store";
+import SuggestionMovie from "@/components/SuggestionMovie";
+import { StateType, useMovieParamsStore } from "@/store/store";
 import { useEffect } from "react";
 
 export default function MovieDetail({ params }: any) {
@@ -11,8 +11,9 @@ export default function MovieDetail({ params }: any) {
   }, [params.id]);
 
   return (
-    <div className="">
-      <MovieDetails/>
-    </div>
+    <>
+      <MovieDetails />
+      <SuggestionMovie />
+    </>
   );
 }

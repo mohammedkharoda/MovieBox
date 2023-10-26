@@ -85,6 +85,7 @@ const MovieDetails = () => {
                     objectFit: "cover",
                   }}
                   fill
+                  loading="lazy"
                 />
                 <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60" />
               </div>
@@ -103,6 +104,7 @@ const MovieDetails = () => {
                     alt="imdb"
                     width={50}
                     height={50}
+                    loading="lazy"
                   />
                   <div>
                     <p className="text-[16px] font-medium">

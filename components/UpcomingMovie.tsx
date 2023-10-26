@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
+import { useRouter } from "next/navigation";
 
 interface Movie {
   id: number;
@@ -16,6 +17,7 @@ interface Movie {
 const UpcomingMovieCard = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
   const splideOptions = {
     type: "loop",
     autoplay: true,
@@ -82,6 +84,7 @@ const UpcomingMovieCard = () => {
             width={200}
             height={200}
             className="mx-auto"
+            loading="lazy"
           />
         </div>
       ) : (
@@ -90,14 +93,20 @@ const UpcomingMovieCard = () => {
           {movies.map((movie) => (
             <SplideSlide key={movie.id}>
               <div className="flex flex-col ">
-                <div className="h-[370px] w-full relative mt-5">
+                <div
+                  className="h-[370px] w-full relative mt-5"
+                  onClick={() => {
+                    router.push(`/movie/${movie.id}`);
+                  }}
+                >
                   <Image
                     src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
                     alt={movie.title}
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
-                    className="rounded-xl"
+                    className="rounded-xl cursor-pointer"
+                    loading="lazy"
                   />
                 </div>
                 <div className="mt-2 flex flex-col gap-2">

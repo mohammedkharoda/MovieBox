@@ -80,6 +80,7 @@ const FeaturedCast = () => {
             width={200}
             height={200}
             className="mx-auto"
+            loading="lazy"
           />
         </div>
       ) : (
@@ -96,6 +97,7 @@ const FeaturedCast = () => {
                     objectFit="cover"
                     objectPosition="center"
                     className="rounded-xl"
+                    loading="lazy"
                   />
                 </div>
                 <div className="mt-5 flex flex-col gap-2">

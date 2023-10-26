@@ -117,6 +117,7 @@ const ExclusiveVideo = () => {
             width={200}
             height={200}
             className="mx-auto"
+            loading="lazy"
           />
         </div>
       )}
