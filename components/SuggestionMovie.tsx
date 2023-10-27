@@ -74,7 +74,11 @@ const SuggestionMovie = () => {
             <div className="flex flex-col" key={index}>
               <div className="h-[570px] w-[400px] relative mt-5">
                 <Image
-                  src={`https://image.tmdb.org/t/p/w500/${movie?.poster_path}`}
+                  src={
+                    movie?.poster_path
+                      ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
+                      : assets.image.DUMMY
+                  }
                   alt={movie.title}
                   layout="fill"
                   objectFit="cover"

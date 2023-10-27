@@ -1,17 +1,61 @@
 "use client";
 import { assets } from "@/public/assets";
-import { useTvParamsStore } from "@/store/store";
+import { useTrailerKeyStore, useTvParamsStore } from "@/store/store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BsPen } from "react-icons/bs";
 import { HiMiniLanguage } from "react-icons/hi2";
 import { LiaImdb } from "react-icons/lia";
 import { RiMovie2Line } from "react-icons/ri";
+import TrailerModal from "./TrailerModal";
 const TvDetails = () => {
   const [seriesData, setseriesData] = useState<any>(null);
   const params = useTvParamsStore((state) => state.params);
-  console.log(params, "inisde component");
+  const [videoData, setVideoData] = useState<any>(null);
+  const TrailerKey = useTrailerKeyStore(
+    (state) => state.setTrailerKey as unknown as any
+  );
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleWatchTrailer = () => {
+    TrailerKey(videoData?.key);
+    setIsModalOpen(true);
+  };
+
+  // ==> For trailer
+
+  useEffect(() => {
+    if (params) {
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+        },
+      };
+
+      fetch(
+        `https://api.themoviedb.org/3/tv/${params}/videos?language=en-US`,
+        options
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          // Filter for the trailer video
+          const trailerVideo = data.results.find(
+            (video: any) => video.type === "Trailer"
+          );
+
+          // If a trailer video is found, set the video data
+          if (trailerVideo) {
+            setVideoData(trailerVideo);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [params]);
+
+  // ==> For Details
   useEffect(() => {
     if (params) {
       const options = {
@@ -29,25 +73,22 @@ const TvDetails = () => {
     }
   }, [params]);
 
-  if (!seriesData) {
-    return <div>Loading...</div>;
-  }
-
-  function convertToHoursAndMinutes(minutes: number) {
-    if (minutes === null || minutes === undefined) {
-      return "N/A";
-    }
-
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    if (hours === 0) {
-      return `${remainingMinutes} min`;
-    } else if (remainingMinutes === 0) {
-      return `${hours} hr`;
-    } else {
-      return `${hours} hr ${remainingMinutes} min`;
-    }
+  if (!seriesData && !seriesData?.poster_path) {
+    return (
+      <div className="w-full h-[280px] mt-20">
+        <Image
+          src={assets.icon.SPINNER}
+          alt="Loading..."
+          width={200}
+          height={200}
+          className="mx-auto"
+          loading="lazy"
+        />
+        <p className="text-center font-sans text-[18px] font-semibold">
+          Your Series will there be in a min...
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -55,8 +96,9 @@ const TvDetails = () => {
       <div className="w-[585px] h-[521px] relative rounded-xl">
         <Image
           fill
+          placeholder="blur"
+          blurDataURL={`https://image.tmdb.org/t/p/original${seriesData?.poster_path}`}
           objectFit="contain"
-          loading="lazy"
           src={
             seriesData?.poster_path
               ? `https://image.tmdb.org/t/p/original${seriesData?.poster_path}`
@@ -67,7 +109,10 @@ const TvDetails = () => {
         />
       </div>
       <div className="col-start-1 row-start-2 ">
-        <button className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3">
+        <button
+          className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
+          onClick={handleWatchTrailer}
+        >
           <RiMovie2Line size={26} />
           Watch Trailer
         </button>
@@ -145,7 +190,7 @@ const TvDetails = () => {
           <div>
             <div className="font-semibold text-[20px]">Streaming On</div>
             <div className="w-[150px] h-[150px] ">
-              <div className="flex gap-4 mt-2 flex-wrap">
+              <div className="flex gap-5 mt-2 flex-wrap items-center">
                 {seriesData?.networks
                   ?.slice(0, 3)
                   .map((network: any, index: number) => (
@@ -171,6 +216,7 @@ const TvDetails = () => {
             </div>
           </div>
         </div>
+        {isModalOpen && <TrailerModal />}
       </div>
     </div>
   );

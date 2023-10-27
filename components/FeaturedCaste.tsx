@@ -48,7 +48,7 @@ const FeaturedCast = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          "https://api.themoviedb.org/3/trending/person/day?language=en-US",
+          "https://api.themoviedb.org/3/person/popular?language=en-US&page=1",
           options
         );
 
@@ -91,7 +91,11 @@ const FeaturedCast = () => {
               <div className="flex flex-col ">
                 <div className="h-[570px] w-full relative mt-5">
                   <Image
-                    src={`https://image.tmdb.org/t/p/original/${movie.profile_path}`}
+                    src={
+                      movie?.profile_path
+                        ? `https://image.tmdb.org/t/p/original/${movie.profile_path}`
+                        : assets.image.DUMMY
+                    }
                     alt={movie.name}
                     layout="fill"
                     objectFit="cover"

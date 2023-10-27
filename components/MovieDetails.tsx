@@ -6,11 +6,55 @@ import { HiMiniLanguage } from "react-icons/hi2";
 import { BiTime } from "react-icons/bi";
 import { assets } from "@/public/assets";
 import { LiaImdb } from "react-icons/lia";
-import { useMovieParamsStore } from "@/store/store";
+import { useMovieParamsStore, useTrailerKeyStore } from "@/store/store";
+import { BsCalendar2 } from "react-icons/bs";
+import TrailerModal from "./TrailerModal";
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState<any>(null);
   const params = useMovieParamsStore((state) => state.params);
+  const [videoData, setVideoData] = useState<any>(null);
+  const TrailerKey = useTrailerKeyStore(
+    (state) => state.setTrailerKey as unknown as any
+  );
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(videoData?.key, "from movie");
+  const handleWatchTrailer = () => {
+    TrailerKey(videoData?.key);
+    setIsModalOpen(true);
+  };
+  // ==> For trailer
+  useEffect(() => {
+    if (params) {
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+        },
+      };
+
+      fetch(
+        `https://api.themoviedb.org/3/movie/${params}/videos?language=en-US`,
+        options
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          // Filter for the trailer video
+          const trailerVideo = data.results.find(
+            (video: any) => video.type === "Trailer"
+          );
+
+          // If a trailer video is found, set the video data
+          if (trailerVideo) {
+            setVideoData(trailerVideo);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [params]);
+
+  // ==> For Details
   useEffect(() => {
     if (params) {
       const options = {
@@ -31,8 +75,22 @@ const MovieDetails = () => {
     }
   }, [params]);
 
-  if (!movieData) {
-    return <div>Loading...</div>;
+  if (!movieData && !movieData?.poster_path) {
+    return (
+      <div className="w-full h-[280px] mt-20">
+        <Image
+          src={assets.icon.SPINNER}
+          alt="Loading..."
+          width={200}
+          height={200}
+          className="mx-auto"
+          loading="lazy"
+        />
+        <p className="text-center font-sans text-[18px] font-semibold">
+          Your Movie will there be in a min...
+        </p>
+      </div>
+    );
   }
 
   function convertToHoursAndMinutes(minutes: number) {
@@ -52,6 +110,15 @@ const MovieDetails = () => {
     }
   }
 
+  function formatDate(inputDate: string) {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    return new Date(inputDate).toLocaleDateString(undefined, options);
+  }
+
   return (
     <div className="mt-[10rem] grid  grid-rows-1 gap-4 justify-items-center">
       <div className="w-[585px] h-[521px] relative rounded-xl">
@@ -59,17 +126,18 @@ const MovieDetails = () => {
           fill
           objectFit="contain"
           loading="lazy"
-          src={
-            movieData?.poster_path
-              ? `https://image.tmdb.org/t/p/original${movieData?.poster_path}`
-              : assets.image.DUMMY
-          }
+          src={`https://image.tmdb.org/t/p/original${
+            movieData?.poster_path ?? assets.image.DUMMY
+          }`}
           alt={movieData?.title}
-          className="drop-shadow-2xl "
+          className="drop-shadow-2xl"
         />
       </div>
       <div className="col-start-1 row-start-2 ">
-        <button className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3">
+        <button
+          className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
+          onClick={handleWatchTrailer}
+        >
           <RiMovie2Line size={26} />
           Watch Trailer
         </button>
@@ -113,12 +181,20 @@ const MovieDetails = () => {
               <HiMiniLanguage size={26} />
               <p className="font-semibold text-[20px]">Languages</p>
             </div>
-            {movieData?.spoken_languages?.map(
-              (language: any, index: number) => (
-                <div key={index}>
-                  <p className="font-bold text-[28px]">{language?.name}</p>
-                </div>
+            {movieData?.spoken_languages?.length > 0 ? (
+              movieData?.spoken_languages.map(
+                (language: any, index: number) => (
+                  <div key={index}>
+                    <p className="font-bold text-[28px]">
+                      {language?.name || "No language found"}
+                    </p>
+                  </div>
+                )
               )
+            ) : (
+              <div>
+                <p className="font-bold text-[28px]">No language found</p>
+              </div>
             )}
           </div>
           <div className="flex flex-col gap-2">
@@ -139,7 +215,17 @@ const MovieDetails = () => {
               {movieData?.vote_average?.toFixed(1)}
             </div>
           </div>
+          <div className="gap-2 flex flex-col">
+            <div className="flex items-center gap-2">
+              <BsCalendar2 size={26} />
+              <div className="text-[20px] font-semibold">Release Date</div>
+            </div>
+            <div className="text-[18px] font-bold text-center">
+              {formatDate(movieData?.release_date)}
+            </div>
+          </div>
         </div>
+        {isModalOpen && <TrailerModal />}
       </div>
     </div>
   );

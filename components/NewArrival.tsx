@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
+import { useRouter } from "next/navigation";
 
 interface Movie {
   id: number;
@@ -11,17 +12,20 @@ interface Movie {
   release_date: string;
   vote_average: number;
   genre_ids: number[];
-  // Add other properties if needed
+  first_air_date: string;
+  name: string;
+  media_type: string;
 }
 const NewArrival = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
   const splideOptions = {
     type: "loop",
     autoplay: true,
     perPage: 3,
     perMove: 2,
-    pagination: false, // You can enable pagination if needed
+    pagination: false,
     navigation: true,
     arrows: false,
     gap: "5%",
@@ -37,6 +41,14 @@ const NewArrival = () => {
     return new Date(inputDate).toLocaleDateString(undefined, options);
   }
 
+  const handleResultClick = (id: any, mediaType: string) => {
+    if (mediaType === "movie") {
+      router.push(`/movie/${id}`);
+    } else if (mediaType === "tv") {
+      router.push(`/tv/${id}`);
+    }
+  };
+
   useEffect(() => {
     async function fetchUpcomingMovies() {
       const options = {
@@ -50,7 +62,7 @@ const NewArrival = () => {
       try {
         setIsLoading(true);
         const response = await fetch(
-          "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
+          "https://api.themoviedb.org/3/trending/all/day?language=en-US",
           options
         );
 
@@ -93,19 +105,24 @@ const NewArrival = () => {
               <div className="flex flex-col ">
                 <div className="h-[370px] w-full relative mt-5">
                   <Image
+                    onClick={() =>
+                      handleResultClick(movie.id, movie.media_type)
+                    }
                     src={`https://image.tmdb.org/t/p/original/${movie?.backdrop_path}`}
                     alt={movie.title}
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
-                    className="rounded-xl"
+                    className="rounded-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
                     loading="lazy"
                   />
                 </div>
                 <div className="mt-2 flex flex-col gap-2">
-                  <p>{formatDate(movie?.release_date)}</p>
+                  <p>
+                    {formatDate(movie?.release_date ?? movie?.first_air_date)}
+                  </p>
                   <p className="text-xl font-bold break-words w-[450px] capitalize">
-                    {movie?.title}
+                    {movie?.title ?? movie?.name}
                   </p>
                   <div className="flex items-center gap-5">
                     <Image

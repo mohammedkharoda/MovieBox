@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
+import { useRouter } from "next/navigation";
 
 interface Movie {
   id: number;
@@ -16,6 +17,7 @@ interface Movie {
 const TvSeries = () => {
   const [series, setSeries] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
   const splideOptions = {
     type: "loop",
     autoplay: true,
@@ -98,8 +100,11 @@ const TvSeries = () => {
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
-                    className="rounded-xl"
+                    className="rounded-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
                     loading="lazy"
+                    onClick={() => {
+                      router.push(`/tv/${serie.id}`);
+                    }}
                   />
                 </div>
                 <div className="mt-2 flex flex-col gap-2">

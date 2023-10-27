@@ -1,8 +1,8 @@
+"use client";
 import ExclusiveVideo from "@/components/ExclusiveVideo";
 import FeaturedCast from "@/components/FeaturedCaste";
 import Footer from "@/components/Footer";
 import Movie from "@/components/Movie";
-import Navbar from "@/components/Navbar";
 import NewArrival from "@/components/NewArrival";
 import TvSeries from "@/components/TvSeries";
 import UpcomingMovie from "@/components/UpcomingMovie";
