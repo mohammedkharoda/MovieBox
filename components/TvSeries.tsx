@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 interface Movie {
   id: number;
-  backdrop_path: string | null;
+  poster_path: string | null;
   name: string;
   first_air_date: string;
   vote_average: number;
@@ -93,13 +93,15 @@ const TvSeries = () => {
           {series.map((serie) => (
             <SplideSlide key={serie.id}>
               <div className="flex flex-col ">
-                <div className="h-[370px] w-full relative mt-5">
+                <div className="h-[780px] w-full relative mt-5">
                   <Image
-                    src={`https://image.tmdb.org/t/p/original/${serie.backdrop_path}`}
+                    src={`https://image.tmdb.org/t/p/original/${serie.poster_path}`}
                     alt={serie.name}
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    // layout="fill"
+                    // objectFit="cover"
+                    // objectPosition="center"
+                    width={500}
+                    height={500}
                     className="rounded-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
                     loading="lazy"
                     onClick={() => {

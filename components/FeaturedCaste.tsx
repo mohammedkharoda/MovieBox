@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
+import { useRouter } from "next/navigation";
 
 interface Movie {
   id: number;
@@ -12,7 +13,7 @@ interface Movie {
   // Add other properties if needed
 }
 const FeaturedCast = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [person, setPerson] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const splideOptions = {
     type: "loop",
@@ -54,7 +55,7 @@ const FeaturedCast = () => {
 
         if (response.ok) {
           const responseData = await response.json();
-          setMovies(responseData.results);
+          setPerson(responseData.results);
         } else {
           console.error("Failed to fetch data");
         }
@@ -67,6 +68,8 @@ const FeaturedCast = () => {
 
     fetchUpcomingMovies();
   }, []);
+
+  const router = useRouter();
 
   return (
     <div className="flex flex-col px-10 mt-[70px]">
@@ -86,27 +89,30 @@ const FeaturedCast = () => {
       ) : (
         // @ts-ignore
         <Splide options={splideOptions}>
-          {movies.map((movie) => (
-            <SplideSlide key={movie.id}>
+          {person.map((actor) => (
+            <SplideSlide key={actor.id}>
               <div className="flex flex-col ">
                 <div className="h-[570px] w-full relative mt-5">
                   <Image
                     src={
-                      movie?.profile_path
-                        ? `https://image.tmdb.org/t/p/original/${movie.profile_path}`
+                      actor?.profile_path
+                        ? `https://image.tmdb.org/t/p/original/${actor.profile_path}`
                         : assets.image.DUMMY
                     }
-                    alt={movie.name}
+                    alt={actor.name}
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
                     className="rounded-xl"
                     loading="lazy"
+                    onClick={() => {
+                      router.push(`/actors/${actor.id}`);
+                    }}
                   />
                 </div>
                 <div className="mt-5 flex flex-col gap-2">
                   <p className="text-xl font-bold break-words w-[250px] capitalize">
-                    {movie.name}
+                    {actor.name}
                   </p>
                 </div>
               </div>

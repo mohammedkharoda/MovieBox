@@ -8,7 +8,7 @@ import { SignInButton, SignOutButton } from "@clerk/nextjs";
 
 interface Movie {
   id: number;
-  backdrop_path: string | null;
+  poster_path: string | null;
   title: string;
   release_date: string;
   vote_average: number;
@@ -96,46 +96,44 @@ const UpcomingMovieCard = () => {
         <Splide options={splideOptions}>
           {movies.map((movie) => (
             <SplideSlide key={movie.id}>
-              <SignOutButton>
-                <SignInButton mode="modal">
-                  <div className="flex flex-col ">
-                    <div
-                      className="h-[370px] w-full relative mt-5"
-                      onClick={() => {
-                        router.push(`/movie/${movie.id}`);
-                      }}
-                    >
-                      <Image
-                        src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}
-                        alt={movie.title}
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="center"
-                        className="rounded-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="mt-2 flex flex-col gap-2">
-                      <p>{formatDate(movie.release_date)}</p>
-                      <p className="text-xl font-bold break-words w-[350px] capitalize">
-                        {movie.title}
-                      </p>
-                      <div className="flex items-center gap-5">
-                        <Image
-                          src={assets.icon.IMDB}
-                          alt="IMDB"
-                          width={50}
-                          height={50}
-                          className="rounded-xl"
-                        />
-                        <p className="text-[16px] text-[#000] font-normal">
-                          {movie.vote_average}/10
-                        </p>
-                      </div>
-                    </div>
+              <div className="flex flex-col ">
+                <div
+                  className="h-[780px] w-full relative mt-5"
+                  onClick={() => {
+                    router.push(`/movie/${movie.id}`);
+                  }}
+                >
+                  <Image
+                    src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                    alt={movie.title}
+                    width={500}
+                    height={500}
+                    // layout="fill"
+                    // objectFit="cover"
+                    // objectPosition="top"
+                    className="rounded-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-2 flex flex-col gap-2">
+                  <p>{formatDate(movie.release_date)}</p>
+                  <p className="text-xl font-bold break-words w-[350px] capitalize">
+                    {movie.title}
+                  </p>
+                  <div className="flex items-center gap-5">
+                    <Image
+                      src={assets.icon.IMDB}
+                      alt="IMDB"
+                      width={50}
+                      height={50}
+                      className="rounded-xl"
+                    />
+                    <p className="text-[16px] text-[#000] font-normal">
+                      {movie.vote_average}/10
+                    </p>
                   </div>
-                </SignInButton>
-              </SignOutButton>
+                </div>
+              </div>
             </SplideSlide>
           ))}
         </Splide>

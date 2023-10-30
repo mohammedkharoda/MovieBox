@@ -13,6 +13,7 @@ const MovieDetails = () => {
   const [movieData, setMovieData] = useState<any>(null);
   const params = useMovieParamsStore((state) => state.params);
   const [videoData, setVideoData] = useState<any>(null);
+  const [castAndCrew, setCastAndCrew] = useState<any[]>([]);
   const TrailerKey = useTrailerKeyStore(
     (state) => state.setTrailerKey as unknown as any
   );
@@ -75,6 +76,37 @@ const MovieDetails = () => {
     }
   }, [params]);
 
+  //  ==> Fetch Cast and Crew
+  useEffect(() => {
+    if (params) {
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+        },
+      };
+
+      fetch(
+        `https://api.themoviedb.org/3/movie/${params}/credits?language=en-US`,
+        options
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const castAndCrewData = data.cast
+            .slice(0, 6) // Get the first 6 members
+            .map((member: any) => ({
+              id: member.id,
+              name: member.name,
+              character: member.character,
+              profilePath: member.profile_path,
+            }));
+          setCastAndCrew(castAndCrewData);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [params]);
+
   if (!movieData && !movieData?.poster_path) {
     return (
       <div className="w-full h-[280px] mt-20">
@@ -120,7 +152,7 @@ const MovieDetails = () => {
   }
 
   return (
-    <div className="mt-[10rem] grid  grid-rows-1 gap-4 justify-items-center">
+    <div className="mt-[10rem] grid gap-4 justify-items-center">
       <div className="w-[585px] h-[521px] relative rounded-xl">
         <Image
           fill
@@ -133,17 +165,21 @@ const MovieDetails = () => {
           className="drop-shadow-2xl"
         />
       </div>
-      <div className="col-start-1 row-start-2 ">
-        <button
-          className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
-          onClick={handleWatchTrailer}
-        >
-          <RiMovie2Line size={26} />
-          Watch Trailer
-        </button>
-      </div>
+
       <div className="col-start-2 row-start-1 flex flex-col gap-4">
-        <div className="text-4xl font-bold">{movieData?.title}</div>
+        <div className="flex justify-between w-fit gap-10 items-center">
+          <div className="text-4xl font-bold">{movieData?.title}</div>
+          <div className="col-start-1 row-start-2 ">
+            <button
+              className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
+              onClick={handleWatchTrailer}
+            >
+              <RiMovie2Line size={26} />
+              Watch Trailer
+            </button>
+          </div>
+        </div>
+
         <div className="flex gap-4">
           {movieData?.genres?.map((genre: any, index: number) => (
             <div key={index}>
@@ -223,6 +259,26 @@ const MovieDetails = () => {
             <div className="text-[18px] font-bold text-center">
               {formatDate(movieData?.release_date)}
             </div>
+          </div>
+        </div>
+        <div className="flex flex-col">
+          <div className="text-[28px] font-semibold text-[#000]">
+            Cast and Crew
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {castAndCrew.map((member: any) => (
+              <div key={member.id}>
+                <Image
+                  src={`https://image.tmdb.org/t/p/original${member.profilePath}`}
+                  alt={member.name}
+                  width={200}
+                  height={200}
+                  className="rounded-xl drop-shadow-xl"
+                />
+                <p className="text-[20px] font-semibold">{member.name}</p>
+                <p className="text-[15px]">{member.character}</p>
+              </div>
+            ))}
           </div>
         </div>
         {isModalOpen && <TrailerModal />}

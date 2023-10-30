@@ -108,7 +108,7 @@ const MovieDetails = () => {
                   />
                   <div>
                     <p className="text-[16px] font-medium">
-                      {movie.vote_average}/10
+                      {movie.vote_average.toFixed(1)}/10
                     </p>
                   </div>
                 </div>

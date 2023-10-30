@@ -1,16 +1,15 @@
 "use client";
-import Image from "next/image";
-import { assets } from "@/public/assets";
 import Search from "@/components/Search";
-import Link from "next/link";
+import { assets } from "@/public/assets";
 import {
   SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
-  auth,
-  useUser,
+  useUser
 } from "@clerk/nextjs";
+import Image from "next/image";
+import Link from "next/link";
 
 const Navbar = () => {
   const { user } = useUser();

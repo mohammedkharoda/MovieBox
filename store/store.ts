@@ -5,6 +5,7 @@ export type StateType = {
   setParams?: (params: any) => void;
   trailerKey?: string | null;
   setTrailerKey?: (key: string | null) => void;
+  actorId?: any;
 };
 
 const useMovieParamsStore = create<StateType>((set) => ({
@@ -21,4 +22,10 @@ const useTrailerKeyStore = create<StateType>((set) => ({
   trailerKey: null,
   setTrailerKey: (key: string | null) => set({ trailerKey: key }),
 }));
-export { useMovieParamsStore, useTvParamsStore, useTrailerKeyStore }
+
+const usePeopleKeyStore = create<StateType>((set) => ({
+  params: null,
+  setParams: (params: any) => set({ params }),
+}));
+
+export { useMovieParamsStore, useTvParamsStore, useTrailerKeyStore, usePeopleKeyStore }
