@@ -103,7 +103,7 @@ const FeaturedCast = () => {
                     layout="fill"
                     objectFit="cover"
                     objectPosition="center"
-                    className="rounded-xl"
+                    className="rounded-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
                     loading="lazy"
                     onClick={() => {
                       router.push(`/actors/${actor.id}`);

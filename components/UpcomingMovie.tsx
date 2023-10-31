@@ -104,7 +104,9 @@ const UpcomingMovieCard = () => {
                   }}
                 >
                   <Image
-                    src={`https://image.tmdb.org/t/p/original/${movie.poster_path}`}
+                    src={`https://image.tmdb.org/t/p/original/${
+                      movie.poster_path ?? assets.image.DUMMY
+                    }`}
                     alt={movie.title}
                     width={500}
                     height={500}

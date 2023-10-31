@@ -9,6 +9,7 @@ import { LiaImdb } from "react-icons/lia";
 import { useMovieParamsStore, useTrailerKeyStore } from "@/store/store";
 import { BsCalendar2 } from "react-icons/bs";
 import TrailerModal from "./TrailerModal";
+import { useRouter } from "next/navigation";
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState<any>(null);
   const params = useMovieParamsStore((state) => state.params);
@@ -19,7 +20,7 @@ const MovieDetails = () => {
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log(videoData?.key, "from movie");
+  const router = useRouter();
   const handleWatchTrailer = () => {
     TrailerKey(videoData?.key);
     setIsModalOpen(true);
@@ -204,7 +205,7 @@ const MovieDetails = () => {
             {movieData?.production_companies?.map(
               (company: any, index: number) => (
                 <p
-                  className="font-bold text-[25px] uppercase underline underline-offset-8"
+                  className="font-bold text-[22px] uppercase underline underline-offset-8"
                   key={index}
                 >
                   {company?.name}
@@ -261,8 +262,8 @@ const MovieDetails = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col">
-          <div className="text-[28px] font-semibold text-[#000]">
+        <div className="flex flex-col gap-4">
+          <div className="mt-4 text-[28px] font-semibold text-[#000]">
             Cast and Crew
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -273,7 +274,10 @@ const MovieDetails = () => {
                   alt={member.name}
                   width={200}
                   height={200}
-                  className="rounded-xl drop-shadow-xl"
+                  className="rounded-xl drop-shadow-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
+                  onClick={() => {
+                    router.push(`/actors/${member.id}`);
+                  }}
                 />
                 <p className="text-[20px] font-semibold">{member.name}</p>
                 <p className="text-[15px]">{member.character}</p>
