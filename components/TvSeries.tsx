@@ -72,7 +72,7 @@ const TvSeries = () => {
           {series.map((serie) => (
             <SplideSlide key={serie.id}>
               <div className="flex flex-col ">
-                <div className="h-[780px] w-full relative mt-5">
+                <div className="h-auto w-full relative mt-5">
                   <Image
                     src={`https://image.tmdb.org/t/p/original/${serie.poster_path}`}
                     alt={serie.name}

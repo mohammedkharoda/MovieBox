@@ -78,7 +78,7 @@ const UpcomingMovieCard = () => {
             <SplideSlide key={movie.id}>
               <div className="flex flex-col ">
                 <div
-                  className="h-[780px] w-full relative mt-5"
+                  className="h-auto w-full relative mt-5"
                   onClick={() => {
                     router.push(`/movie/${movie.id}`);
                   }}

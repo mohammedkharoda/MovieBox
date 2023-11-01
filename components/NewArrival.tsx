@@ -84,7 +84,7 @@ const NewArrival = () => {
           {newArrivals?.map((movie) => (
             <SplideSlide key={movie.id}>
               <div className="flex flex-col ">
-                <div className="h-[780px] w-full relative mt-5">
+                <div className="h-auto w-full relative mt-5">
                   <Image
                     onClick={() =>
                       handleResultClick(movie.id, movie.media_type)

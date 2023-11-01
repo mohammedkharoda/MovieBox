@@ -8,6 +8,7 @@ import { HiMiniLanguage } from "react-icons/hi2";
 import { LiaImdb } from "react-icons/lia";
 import { RiMovie2Line } from "react-icons/ri";
 import TrailerModal from "./TrailerModal";
+import { fetchTrailerVideo, fetchTvDetails } from "@/app/api/getTvDetails";
 const TvDetails = () => {
   const [seriesData, setseriesData] = useState<any>(null);
   const params = useTvParamsStore((state) => state.params);
@@ -27,26 +28,8 @@ const TvDetails = () => {
 
   useEffect(() => {
     if (params) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
-      fetch(
-        `https://api.themoviedb.org/3/tv/${params}/videos?language=en-US`,
-        options
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          // Filter for the trailer video
-          const trailerVideo = data.results.find(
-            (video: any) => video.type === "Trailer"
-          );
-
-          // If a trailer video is found, set the video data
+      fetchTrailerVideo(params)
+        .then((trailerVideo) => {
           if (trailerVideo) {
             setVideoData(trailerVideo);
           }
@@ -58,16 +41,7 @@ const TvDetails = () => {
   // ==> For Details
   useEffect(() => {
     if (params) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY} `,
-        },
-      };
-
-      fetch(`https://api.themoviedb.org/3/tv/${params}?language=en-US`, options)
-        .then((response) => response.json())
+      fetchTvDetails(params)
         .then((data) => setseriesData(data))
         .catch((err) => console.error(err));
     }
