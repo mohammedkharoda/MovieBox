@@ -108,17 +108,19 @@ const TvDetails = () => {
           className="drop-shadow-2xl "
         />
       </div>
-      <div className="col-start-1 row-start-2 ">
-        <button
-          className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
-          onClick={handleWatchTrailer}
-        >
-          <RiMovie2Line size={26} />
-          Watch Trailer
-        </button>
-      </div>
       <div className="col-start-2 row-start-1 flex flex-col gap-4">
-        <div className="text-4xl font-bold">{seriesData?.name}</div>
+        <div className="flex w-fit gap-5 items-center">
+          <div className="text-4xl font-bold">{seriesData?.name}</div>
+          <div>
+            <button
+              className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
+              onClick={handleWatchTrailer}
+            >
+              <RiMovie2Line size={26} />
+              Watch Trailer
+            </button>
+          </div>
+        </div>
         <div className="flex gap-4">
           {seriesData?.genres?.map((genre: any, index: number) => (
             <div key={index}>

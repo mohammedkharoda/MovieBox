@@ -1,6 +1,6 @@
 "use client";
 import ExclusiveVideo from "@/components/ExclusiveVideo";
-import FeaturedCast from "@/components/FeaturedCaste";
+import TopPeople from "@/components/TopPeople";
 import Footer from "@/components/Footer";
 import Movie from "@/components/Movie";
 import NewArrival from "@/components/NewArrival";
@@ -17,7 +17,7 @@ export default function Home() {
       <NewArrival />
       <ExclusiveVideo />
       <TvSeries />
-      <FeaturedCast />
+      <TopPeople />
       <Footer />
     </>
   );

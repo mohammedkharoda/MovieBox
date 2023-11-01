@@ -4,7 +4,7 @@ import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useRouter } from "next/navigation";
-
+import { getTopPeopleData } from "@/app/api/getTopPeopleData";
 interface Movie {
   id: number;
   profile_path: string | null;
@@ -12,7 +12,7 @@ interface Movie {
 
   // Add other properties if needed
 }
-const FeaturedCast = () => {
+const TopPeoples = () => {
   const [person, setPerson] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const splideOptions = {
@@ -37,36 +37,12 @@ const FeaturedCast = () => {
   }
 
   useEffect(() => {
-    async function fetchUpcomingMovies() {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          "https://api.themoviedb.org/3/person/popular?language=en-US&page=1",
-          options
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          setPerson(responseData.results);
-        } else {
-          console.error("Failed to fetch data");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
+    try {
+      getTopPeopleData().then((data) => {
+        setPerson(data);
         setIsLoading(false);
-      }
-    }
-
-    fetchUpcomingMovies();
+      });
+    } catch (e) {}
   }, []);
 
   const router = useRouter();
@@ -124,4 +100,4 @@ const FeaturedCast = () => {
   );
 };
 
-export default FeaturedCast;
+export default TopPeoples;

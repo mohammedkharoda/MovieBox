@@ -4,7 +4,7 @@ import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useRouter } from "next/navigation";
-
+import { getTvSeriesData } from "@/app/api/getTvSeriesData";
 interface Movie {
   id: number;
   poster_path: string | null;
@@ -12,7 +12,6 @@ interface Movie {
   first_air_date: string;
   vote_average: number;
   genre_ids: number[];
-  // Add other properties if needed
 }
 const TvSeries = () => {
   const [series, setSeries] = useState<Movie[]>([]);
@@ -40,36 +39,16 @@ const TvSeries = () => {
   }
 
   useEffect(() => {
-    async function fetchUpcomingMovies() {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
+    async function fetchSeries() {
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          "https://api.themoviedb.org/3/trending/tv/week?language=en-IN",
-          options
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          setSeries(responseData.results);
-        } else {
-          console.error("Failed to fetch data");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
+        const data = await getTvSeriesData();
+        setSeries(data);
         setIsLoading(false);
+      } catch (e) {
+        console.log(e);
       }
     }
-
-    fetchUpcomingMovies();
+    fetchSeries();
   }, []);
 
   return (

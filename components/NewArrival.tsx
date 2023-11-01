@@ -4,7 +4,7 @@ import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useRouter } from "next/navigation";
-
+import getNewArrivalData from "@/app/api/getNewArrivalData";
 interface Movie {
   id: number;
   poster_path: string | null;
@@ -17,7 +17,7 @@ interface Movie {
   media_type: string;
 }
 const NewArrival = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [newArrivals, setNewArrivalMovies] = useState<Movie[]>([]);
   const [loading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const splideOptions = {
@@ -50,36 +50,17 @@ const NewArrival = () => {
   };
 
   useEffect(() => {
-    async function fetchUpcomingMovies() {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
+    async function fetchNewArrivals() {
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          "https://api.themoviedb.org/3/trending/all/day?language=en-US",
-          options
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          setMovies(responseData.results);
-        } else {
-          console.error("Failed to fetch data");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
+        const data = await getNewArrivalData();
+        setNewArrivalMovies(data);
         setIsLoading(false);
+      } catch (e) {
+        console.log(e);
       }
     }
 
-    fetchUpcomingMovies();
+    fetchNewArrivals();
   }, []);
 
   return (
@@ -100,7 +81,7 @@ const NewArrival = () => {
       ) : (
         // @ts-ignore
         <Splide options={splideOptions}>
-          {movies?.map((movie) => (
+          {newArrivals?.map((movie) => (
             <SplideSlide key={movie.id}>
               <div className="flex flex-col ">
                 <div className="h-[780px] w-full relative mt-5">

@@ -4,8 +4,8 @@ import Image from "next/image";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useRouter } from "next/navigation";
-import { SignInButton, SignOutButton } from "@clerk/nextjs";
-
+import getUpcomingData from "@/app/api/getUpcomingData";
+import { PiWarningCircleBold } from "react-icons/pi";
 interface Movie {
   id: number;
   poster_path: string | null;
@@ -16,7 +16,7 @@ interface Movie {
   // Add other properties if needed
 }
 const UpcomingMovieCard = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [upcomingMovies, setUpcomingMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const splideOptions = {
@@ -41,36 +41,16 @@ const UpcomingMovieCard = () => {
   }
 
   useEffect(() => {
-    async function fetchUpcomingMovies() {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
+    async function fetchUpcomingData() {
       try {
-        setIsLoading(true);
-        const response = await fetch(
-          "https://api.themoviedb.org/3/movie/upcoming?language=en-IN&page=1",
-          options
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          setMovies(responseData.results);
-        } else {
-          console.error("Failed to fetch data");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
+        const data = await getUpcomingData();
+        setUpcomingMovies(data);
         setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     }
-
-    fetchUpcomingMovies();
+    fetchUpcomingData();
   }, []);
 
   return (
@@ -94,7 +74,7 @@ const UpcomingMovieCard = () => {
       ) : (
         // @ts-ignore
         <Splide options={splideOptions}>
-          {movies.map((movie) => (
+          {upcomingMovies.map((movie) => (
             <SplideSlide key={movie.id}>
               <div className="flex flex-col ">
                 <div
@@ -123,15 +103,29 @@ const UpcomingMovieCard = () => {
                     {movie.title}
                   </p>
                   <div className="flex items-center gap-5">
-                    <Image
-                      src={assets.icon.IMDB}
-                      alt="IMDB"
-                      width={50}
-                      height={50}
-                      className="rounded-xl"
-                    />
+                    {movie.vote_average.toFixed(1) === "0.0" ? (
+                      ""
+                    ) : (
+                      <Image
+                        src={assets.icon.IMDB}
+                        alt="IMDB"
+                        width={50}
+                        height={50}
+                        className="rounded-xl"
+                      />
+                    )}
+
                     <p className="text-[16px] text-[#000] font-normal">
-                      {movie.vote_average}/10
+                      {movie.vote_average.toFixed(1) === "0.0" ? (
+                        <>
+                          <p className=" bg-orange-400 px-3 py-2 rounded-full text-black font-semibold text-[16px] flex items-center gap-2">
+                            <PiWarningCircleBold size={26} />
+                            Yet to be released
+                          </p>
+                        </>
+                      ) : (
+                        movie.vote_average.toFixed(1) + "/10"
+                      )}
                     </p>
                   </div>
                 </div>

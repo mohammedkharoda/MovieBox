@@ -11,7 +11,6 @@ export default function Actors({ params }: any) {
     setParams(params.id);
   }, [params.id]);
 
-  console.log("from opages", params.id);
   return (
     <>
       <PeopleDetails />

@@ -1,12 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/splide/dist/css/splide.min.css";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
-import { assets } from "@/public/assets";
 import { useRouter } from "next/navigation";
-
+import getMovieData from "@/app/api/getMovieData";
+import { useEffect, useState } from "react";
 interface Movie {
   id: number;
   backdrop_path: string | null;
@@ -19,37 +18,18 @@ interface Movie {
 
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState<Movie[] | null>(null);
-
   useEffect(() => {
-    async function fetchMovieData() {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
+    async function fetchData() {
       try {
-        const response = await fetch(
-          "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
-          options
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          setMovieData(responseData.results);
-        } else {
-          console.error("Failed to fetch data");
-        }
+        const data = await getMovieData();
+        setMovieData(data);
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching data:", error);
       }
     }
 
-    fetchMovieData();
+    fetchData();
   }, []);
-
   const splideOptions = {
     type: "loop",
     autoplay: true,
@@ -73,7 +53,7 @@ const MovieDetails = () => {
       <Splide options={splideOptions}>
         {movieData &&
           movieData?.length > 0 &&
-          movieData.map((movie) => (
+          movieData.map((movie: any) => (
             <SplideSlide key={movie.id}>
               <div className="relative h-full w-full">
                 <Image

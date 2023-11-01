@@ -4,68 +4,30 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import Image from "next/image";
 import { assets } from "@/public/assets";
-
+import { fetchMovieId, fetchVideo } from "@/app/api/getTrailerData";
 const ExclusiveVideo = () => {
-  const [movieIds, setMovieIds] = useState([]);
+  const [movieIds, setMovieIds] = useState<any>();
   const [videos, setVideos] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
   useEffect(() => {
-    async function fetchMovieIds() {
+    async function fetchData() {
       try {
-        const response = await fetch(
-          `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_KEY}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          if (data.results && data.results.length > 0) {
-            setMovieIds(data.results.map((movie: any) => movie.id));
-          }
-        } else {
-          console.error("Failed to fetch movie data");
+        const ids = await fetchMovieId();
+        setMovieIds(ids);
+
+        if (ids.length > 0) {
+          const videoData = await fetchVideo(ids);
+          setVideos(videoData);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Error:", error);
       }
     }
 
-    fetchMovieIds();
+    fetchData();
   }, []);
-
-  useEffect(() => {
-    async function fetchVideos() {
-      const videoPromises = movieIds.map(async (movieId) => {
-        try {
-          setIsLoading(true);
-          const response = await fetch(
-            `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${process.env.NEXT_PUBLIC_KEY}`
-          );
-          if (response.ok) {
-            const data = await response.json();
-            if (data.results && data.results.length > 0) {
-              return {
-                key: data.results[0].key,
-                name: data.results[0].name,
-              };
-            }
-          } else {
-            console.error("Failed to fetch video data");
-          }
-        } catch (error) {
-          console.error("Error:", error);
-        } finally {
-          setIsLoading(false);
-        }
-        return null;
-      });
-
-      const videoData = await Promise.all(videoPromises);
-      setVideos(videoData.filter((data) => data !== null));
-    }
-
-    if (movieIds.length > 0) {
-      fetchVideos();
-    }
-  }, [movieIds]);
 
   const splideOptions = {
     type: "loop",
