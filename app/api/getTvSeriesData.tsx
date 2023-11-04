@@ -1,7 +1,8 @@
 export const getTvSeriesData = async () => {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/trending/tv/week?language=en-IN&api_key=${process.env.NEXT_PUBLIC_KEY}`
+      `https://api.themoviedb.org/3/trending/tv/week?language=en-IN&api_key=${process.env.NEXT_PUBLIC_KEY}`,
+      { next: { revalidate: 3600 }, cache: "force-cache" }
     );
     if (response.ok) {
       const data = await response.json();

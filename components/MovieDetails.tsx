@@ -10,6 +10,7 @@ import { useMovieParamsStore, useTrailerKeyStore } from "@/store/store";
 import { BsCalendar2 } from "react-icons/bs";
 import TrailerModal from "./TrailerModal";
 import { useRouter } from "next/navigation";
+import { fetchMovieCredits, fetchMovieDetails, fetchMovieVideos } from "@/app/api/getMovieDetails";
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState<any>(null);
   const params = useMovieParamsStore((state) => state.params);
@@ -25,29 +26,13 @@ const MovieDetails = () => {
     TrailerKey(videoData?.key);
     setIsModalOpen(true);
   };
-  // ==> For trailer
+
+
   useEffect(() => {
     if (params) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
-      fetch(
-        `https://api.themoviedb.org/3/movie/${params}/videos?language=en-US`,
-        options
-      )
-        .then((response) => response.json())
+      fetchMovieVideos(params)
         .then((data) => {
-          // Filter for the trailer video
-          const trailerVideo = data.results.find(
-            (video: any) => video.type === "Trailer"
-          );
-
-          // If a trailer video is found, set the video data
+          const trailerVideo = data.results.find((video: any) => video.type === 'Trailer');
           if (trailerVideo) {
             setVideoData(trailerVideo);
           }
@@ -56,58 +41,29 @@ const MovieDetails = () => {
     }
   }, [params]);
 
-  // ==> For Details
   useEffect(() => {
     if (params) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY} `,
-        },
-      };
-
-      fetch(
-        `https://api.themoviedb.org/3/movie/${params}?language=en-US`,
-        options
-      )
-        .then((response) => response.json())
+      fetchMovieDetails(params)
         .then((data) => setMovieData(data))
         .catch((err) => console.error(err));
     }
   }, [params]);
 
-  //  ==> Fetch Cast and Crew
   useEffect(() => {
     if (params) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
-      fetch(
-        `https://api.themoviedb.org/3/movie/${params}/credits?language=en-US`,
-        options
-      )
-        .then((response) => response.json())
+      fetchMovieCredits(params)
         .then((data) => {
-          const castAndCrewData = data.cast
-            .slice(0, 6) // Get the first 6 members
-            .map((member: any) => ({
-              id: member.id,
-              name: member.name,
-              character: member.character,
-              profilePath: member.profile_path,
-            }));
+          const castAndCrewData = data.cast.slice(0, 6).map((member: any) => ({
+            id: member.id,
+            name: member.name,
+            character: member.character,
+            profilePath: member.profile_path,
+          }));
           setCastAndCrew(castAndCrewData);
         })
         .catch((err) => console.error(err));
     }
   }, [params]);
-
   if (!movieData && !movieData?.poster_path) {
     return (
       <div className="w-full h-[280px] mt-20">

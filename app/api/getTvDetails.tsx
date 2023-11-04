@@ -1,16 +1,16 @@
 // ==> For Trailer 
 export async function fetchTvDetails(params: string) {
-    const options = {
-        method: "GET",
-        headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-    };
-
     const response = await fetch(
         `https://api.themoviedb.org/3/tv/${params}?language=en-US`,
-        options
+        {
+            method: "GET",
+            headers: {
+                accept: "application/json",
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+            },
+            next: { revalidate: 3600 },
+            cache: "force-cache"
+        }
     );
 
     if (!response.ok) {
@@ -22,17 +22,18 @@ export async function fetchTvDetails(params: string) {
 }
 
 export async function fetchTrailerVideo(params: string) {
-    const options = {
-        method: "GET",
-        headers: {
-            accept: "application json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-    };
 
     const response = await fetch(
         `https://api.themoviedb.org/3/tv/${params}/videos?language=en-US`,
-        options
+        {
+            method: "GET",
+            headers: {
+                accept: "application json",
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+            },
+            next: { revalidate: 3600 },
+            cache: "force-cache"
+        }
     );
 
     if (!response.ok) {

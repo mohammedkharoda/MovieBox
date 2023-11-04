@@ -1,4 +1,5 @@
 "use client";
+import { fetchRecommendedSeries } from "@/app/api/getSuggestedSeries";
 import { assets } from "@/public/assets";
 import { useTvParamsStore } from "@/store/store";
 import Image from "next/image";
@@ -18,42 +19,22 @@ const SuggestionTv = () => {
   const router = useRouter();
   const params = useTvParamsStore((state) => state.params);
   useEffect(() => {
-    if (params) {
-      const fetchSimilarMovies = async (tvId: any) => {
-        const options = {
-          method: "GET",
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-          },
-        };
-
-        try {
-          setIsLoading(true);
-          const response = await fetch(
-            `https://api.themoviedb.org/3/tv/${tvId}/similar?language=en-US&page=1`,
-            options
-          );
-
-          if (response.ok) {
-            const responseData = await response.json();
-            setSeries(responseData.results);
-          } else {
-            console.error("Failed to fetch data");
-          }
-        } catch (error) {
-          console.error("Error:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      if (params !== null) {
-        fetchSimilarMovies(params); // Fetch data if params are available
+    async function fetchSeriesData(tvId: any) {
+      try {
+        setIsLoading(true);
+        const recommendedSeries = await fetchRecommendedSeries(tvId);
+        setSeries(recommendedSeries);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     }
-  }, [params]);
 
+    if (params !== null) {
+      fetchSeriesData(params); // Fetch data if params are available
+    }
+  }, [params]);
   const displaySeries = expanded ? series : series.slice(0, 8);
 
   return (

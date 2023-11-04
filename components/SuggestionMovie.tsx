@@ -1,3 +1,4 @@
+import { fetchRecommendedMovies } from "@/app/api/getSuggestedMovie";
 import { assets } from "@/public/assets";
 import { useMovieParamsStore } from "@/store/store";
 import Image from "next/image";
@@ -17,39 +18,23 @@ const SuggestionMovie = () => {
   const params = useMovieParamsStore((state) => state.params);
   const router = useRouter();
   useEffect(() => {
-    async function fetchSimilarMovies(movieId: number) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
+    async function fetchMoviesData(movieId: any) {
       try {
         setIsLoading(true);
-        const response = await fetch(
-          `https://api.themoviedb.org/3/movie/${movieId}/similar?language=en-US&page=1`,
-          options
-        );
-
-        if (response.ok) {
-          const responseData = await response.json();
-          setMovies(responseData.results);
-        } else {
-          console.error("Failed to fetch data");
-        }
+        const recommendedMovies = await fetchRecommendedMovies(movieId);
+        setMovies(recommendedMovies);
       } catch (error) {
-        console.error("Error:", error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
     }
 
     if (params !== null) {
-      fetchSimilarMovies(params); // Fetch data if params are available
+      fetchMoviesData(params); // Fetch data if params are available
     }
   }, [params]);
+
 
   const displayedMovies = expanded ? movies : movies.slice(0, 8);
 

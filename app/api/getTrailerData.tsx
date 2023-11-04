@@ -1,7 +1,8 @@
 export async function fetchMovieId() {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_KEY}`
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.NEXT_PUBLIC_KEY}`,
+      { next: { revalidate: 3600 }, cache: "force-cache" }
     );
     if (response.ok) {
       const data = await response.json();

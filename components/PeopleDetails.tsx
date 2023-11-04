@@ -1,3 +1,4 @@
+import { fetchActorDetails } from "@/app/api/getPeopleDetails";
 import { assets } from "@/public/assets";
 import { usePeopleKeyStore } from "@/store/store";
 import Image from "next/image";
@@ -21,28 +22,11 @@ const PeopleDetails = () => {
   // ==> For Details
   useEffect(() => {
     if (params) {
-      const options = {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-        },
-      };
-
-      fetch(
-        `https://api.themoviedb.org/3/person/${params}?language=en-US`,
-        options
-      )
-        .then((response) => response.json())
-        .then((data) => setActorDetails(data))
-        .catch((err) => console.error(err));
-
-      fetch(
-        `https://api.themoviedb.org/3/person/${params}/combined_credits?language=en-US`,
-        options
-      )
-        .then((response) => response.json())
-        .then((data) => setCredits(data.cast))
+      fetchActorDetails(params)
+        .then(({ actorDetails, credits }) => {
+          setActorDetails(actorDetails);
+          setCredits(credits);
+        })
         .catch((err) => console.error(err));
     }
   }, [params]);
