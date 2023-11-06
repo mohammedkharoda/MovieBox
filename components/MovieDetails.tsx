@@ -6,11 +6,21 @@ import { HiMiniLanguage } from "react-icons/hi2";
 import { BiTime } from "react-icons/bi";
 import { assets } from "@/public/assets";
 import { LiaImdb } from "react-icons/lia";
-import { useMovieParamsStore, useTrailerKeyStore } from "@/store/store";
+import {
+  useLikedMoviesStore,
+  useMovieParamsStore,
+  useTrailerKeyStore,
+} from "@/store/store";
 import { BsCalendar2 } from "react-icons/bs";
 import TrailerModal from "./TrailerModal";
 import { useRouter } from "next/navigation";
-import { fetchMovieCredits, fetchMovieDetails, fetchMovieVideos } from "@/app/api/getMovieDetails";
+import {
+  fetchMovieCredits,
+  fetchMovieDetails,
+  fetchMovieVideos,
+} from "@/app/api/getMovieDetails";
+import { PiWarningCircleBold } from "react-icons/pi";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState<any>(null);
   const params = useMovieParamsStore((state) => state.params);
@@ -22,17 +32,26 @@ const MovieDetails = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const likedMoviesStore = useLikedMoviesStore() as unknown as any;
   const handleWatchTrailer = () => {
     TrailerKey(videoData?.key);
     setIsModalOpen(true);
   };
-
-
+  const handleLikeButtonClick = () => {
+    if (likedMoviesStore.likedMovies.includes(movieData)) {
+      likedMoviesStore.removeLikedMovie(movieData);
+    } else {
+      likedMoviesStore?.addLikedMovie(movieData);
+    }
+  };
+  const isLiked = likedMoviesStore.likedMovies.includes(movieData);
   useEffect(() => {
     if (params) {
       fetchMovieVideos(params)
         .then((data) => {
-          const trailerVideo = data.results.find((video: any) => video.type === 'Trailer');
+          const trailerVideo = data.results.find(
+            (video: any) => video.type === "Trailer"
+          );
           if (trailerVideo) {
             setVideoData(trailerVideo);
           }
@@ -135,6 +154,22 @@ const MovieDetails = () => {
               Watch Trailer
             </button>
           </div>
+          <div>
+            {isLiked ? (
+              <AiFillHeart
+                size={26}
+                color="red"
+                onClick={handleLikeButtonClick}
+                className="cursor-pointer"
+              />
+            ) : (
+              <AiOutlineHeart
+                size={26}
+                onClick={handleLikeButtonClick}
+                className="cursor-pointer"
+              />
+            )}
+          </div>
         </div>
 
         <div className="flex gap-4">
@@ -204,13 +239,22 @@ const MovieDetails = () => {
               <LiaImdb size={26} />
               <div className="text-[20px] font-semibold">Rating</div>
             </div>
-            <div className="text-[20px] font-bold">
-              {movieData?.vote_average?.toFixed(1)}
-            </div>
+            <p className="text-[20px] text-[#000] font-bold">
+              {movieData.vote_average.toFixed(1) === "0.0" ? (
+                <>
+                  <p className=" bg-orange-400 px-3 py-2 rounded-full text-black font-semibold text-[16px] flex items-center gap-2">
+                    <PiWarningCircleBold size={26} />
+                    Yet to be released
+                  </p>
+                </>
+              ) : (
+                movieData.vote_average.toFixed(1) + "/10"
+              )}
+            </p>
           </div>
           <div className="gap-2 flex flex-col">
             <div className="flex items-center gap-2">
-              <BsCalendar2 size={26} />
+              <BsCalendar2 size={36} />
               <div className="text-[20px] font-semibold">Release Date</div>
             </div>
             <div className="text-[18px] font-bold text-center">
@@ -219,7 +263,7 @@ const MovieDetails = () => {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="mt-4 text-[28px] font-semibold text-[#000]">
+          <div className="mt-4 text-[28px] font-semibold text-[#000] text-center">
             Cast and Crew
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

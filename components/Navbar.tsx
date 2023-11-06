@@ -1,18 +1,23 @@
 "use client";
 import Search from "@/components/Search";
 import { assets } from "@/public/assets";
+import { useLikedMoviesStore } from "@/store/store";
 import {
   SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
-  useUser
+  useUser,
 } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AiOutlineHeart } from "react-icons/ai";
 
 const Navbar = () => {
+  const router = useRouter();
   const { user } = useUser();
+  const likedMoviesStore = useLikedMoviesStore() as unknown as any;
   return (
     <>
       <div className="absolute top-0 left-0 w-full z-10 bg-gradient-to-r from-[#791e3c]/70 to-[#7b7357]/70">
@@ -43,6 +48,16 @@ const Navbar = () => {
                 <>
                   <p className="font-semibold text-[#fff]">
                     Hello, {user.firstName}
+                  </p>
+                  <p
+                    className=" cursor-pointer font-semibold text-[#fff] text-[16px]"
+                    onClick={() => router.push("/favourites")}
+                  >
+                    Favourite Movies (
+                    <span className="text-[#fff] ml-1">
+                      {likedMoviesStore.likedMovies.length}
+                    </span>{" "}
+                    )
                   </p>
                 </>
               )}

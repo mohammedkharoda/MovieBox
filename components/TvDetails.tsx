@@ -1,6 +1,10 @@
 "use client";
 import { assets } from "@/public/assets";
-import { useTrailerKeyStore, useTvParamsStore } from "@/store/store";
+import {
+  useLikedMoviesStore,
+  useTrailerKeyStore,
+  useTvParamsStore,
+} from "@/store/store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { BsPen } from "react-icons/bs";
@@ -8,22 +12,37 @@ import { HiMiniLanguage } from "react-icons/hi2";
 import { LiaImdb } from "react-icons/lia";
 import { RiMovie2Line } from "react-icons/ri";
 import TrailerModal from "./TrailerModal";
-import { fetchTrailerVideo, fetchTvDetails } from "@/app/api/getTvDetails";
+import {
+  fetchTrailerVideo,
+  fetchTvCredits,
+  fetchTvDetails,
+} from "@/app/api/getTvDetails";
+import { useRouter } from "next/navigation";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 const TvDetails = () => {
   const [seriesData, setseriesData] = useState<any>(null);
   const params = useTvParamsStore((state) => state.params);
   const [videoData, setVideoData] = useState<any>(null);
+  const [castAndCrew, setCastAndCrew] = useState<any[]>([]);
   const TrailerKey = useTrailerKeyStore(
     (state) => state.setTrailerKey as unknown as any
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const likedMoviesStore = useLikedMoviesStore() as unknown as any;
+  const router = useRouter();
   const handleWatchTrailer = () => {
     TrailerKey(videoData?.key);
     setIsModalOpen(true);
   };
-
+  const handleLikeButtonClick = () => {
+    if (likedMoviesStore.likedMovies.includes(seriesData)) {
+      likedMoviesStore.removeLikedMovie(seriesData);
+    } else {
+      likedMoviesStore?.addLikedMovie(seriesData);
+    }
+  };
+  const isLiked = likedMoviesStore.likedMovies.includes(seriesData);
   // ==> For trailer
 
   useEffect(() => {
@@ -46,6 +65,24 @@ const TvDetails = () => {
         .catch((err) => console.error(err));
     }
   }, [params]);
+
+  useEffect(() => {
+    if (params) {
+      fetchTvCredits(params)
+        .then((data) => {
+          const castAndCrewData = data.cast.slice(0, 6).map((member: any) => ({
+            id: member.id,
+            name: member.name,
+            character: member.character,
+            profilePath: member.profile_path,
+          }));
+          setCastAndCrew(castAndCrewData);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [params]);
+
+  console.log(castAndCrew, "crew-->");
 
   if (!seriesData && !seriesData?.poster_path) {
     return (
@@ -93,6 +130,22 @@ const TvDetails = () => {
               <RiMovie2Line size={26} />
               Watch Trailer
             </button>
+          </div>
+          <div>
+            {isLiked ? (
+              <AiFillHeart
+                size={26}
+                color="red"
+                onClick={handleLikeButtonClick}
+                className="cursor-pointer"
+              />
+            ) : (
+              <AiOutlineHeart
+                size={26}
+                onClick={handleLikeButtonClick}
+                className="cursor-pointer"
+              />
+            )}
           </div>
         </div>
         <div className="flex gap-4">
@@ -191,6 +244,31 @@ const TvDetails = () => {
               {seriesData?.vote_average?.toFixed(1)}
             </div>
           </div>
+        </div>
+        <div className="text-[#000] font-bold text-[32px] my-5 text-center">
+          Cast and Crew
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {castAndCrew.map((member: any) => (
+            <div key={member.id}>
+              <Image
+                src={
+                  member?.profilePath
+                    ? `https://image.tmdb.org/t/p/original${member.profilePath}`
+                    : assets.image.DUMMY
+                }
+                alt={member.name}
+                width={200}
+                height={200}
+                className="rounded-xl drop-shadow-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
+                onClick={() => {
+                  router.push(`/actors/${member.id}`);
+                }}
+              />
+              <p className="text-[20px] font-semibold">{member.name}</p>
+              <p className="text-[15px]">{member.character}</p>
+            </div>
+          ))}
         </div>
         {isModalOpen && <TrailerModal />}
       </div>

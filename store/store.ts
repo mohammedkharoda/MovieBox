@@ -1,3 +1,4 @@
+import { persist } from 'zustand/middleware';
 import { create } from "zustand";
 
 export type StateType = {
@@ -31,4 +32,20 @@ const usePeopleKeyStore = create<StateType>((set) => ({
 }));
 
 
-export { useMovieParamsStore, useTvParamsStore, useTrailerKeyStore, usePeopleKeyStore }
+const useLikedMoviesStore = create<any>(persist((set) => ({
+  likedMovies: [],
+  addLikedMovie: (movie: any) => {
+    set((state: any) => ({
+      likedMovies: [...state.likedMovies, movie],
+    }));
+  },
+
+  removeLikedMovie: (movie: any) => {
+    set((state: any) => ({
+      likedMovies: state.likedMovies.filter((id: number) => id !== movie),
+    }));
+  },
+}), {
+  name: 'likedMovies',
+}));
+export { useMovieParamsStore, useTvParamsStore, useTrailerKeyStore, usePeopleKeyStore, useLikedMoviesStore }

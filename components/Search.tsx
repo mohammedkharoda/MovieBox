@@ -82,14 +82,13 @@ const SearchComponent = () => {
         </div>
       </div>
       {results.length > 0 && showResults && (
-        <div className="absolute top-full left-0 bg-transparent/80 border border-1 min-w-[505px] z-10 mt-1">
-          {/* Add this container for search results */}
+        <div className="absolute top-full left-0 bg-transparent/80 border border-1 min-w-[505px] z-10 mt-1 rounded-lg">
           <div className="text-[#fff]">
             {results.map((result) => (
               <div
                 key={result.id}
                 onClick={() => handleResultClick(result.id, result.media_type)}
-                className="cursor-pointer hover:bg-white hover:text-black"
+                className="cursor-pointer text-center my-2 hover:bg-white hover:text-black"
               >
                 {result.title || result.name}
               </div>

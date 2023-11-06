@@ -4,12 +4,14 @@ import DEMO from "./images/demo.jpg";
 import CIRCLE from './images/circle.gif';
 import SPINNER from './images/Infinity.svg';
 import DUMMY from './images/dummy.jpg'
+import SEARCH from './images/search.gif'
 export const assets = {
   icon: {
     ICON,
     IMDB,
     CIRCLE,
-    SPINNER
+    SPINNER,
+    SEARCH,
   },
   image: {
     DEMO,
