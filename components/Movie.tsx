@@ -117,9 +117,6 @@ const MovieDetails = () => {
             className="mx-auto"
             loading="lazy"
           />
-          <p className="text-center font-sans text-[18px] font-semibold">
-            Top Movies are on it&apos;s way...
-          </p>
         </div>
       )}
     </div>
