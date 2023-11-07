@@ -24,6 +24,7 @@ const TvDetails = () => {
   const params = useTvParamsStore((state) => state.params);
   const [videoData, setVideoData] = useState<any>(null);
   const [castAndCrew, setCastAndCrew] = useState<any[]>([]);
+  const [isLoadingCrew, setIsLoadingCrew] = useState(true);
   const TrailerKey = useTrailerKeyStore(
     (state) => state.setTrailerKey as unknown as any
   );
@@ -77,8 +78,14 @@ const TvDetails = () => {
             profilePath: member.profile_path,
           }));
           setCastAndCrew(castAndCrewData);
+          setIsLoadingCrew(false);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+          console.error(err);
+        })
+        .finally(() => {
+          setIsLoadingCrew(true);
+        });
     }
   }, [params]);
 
@@ -245,31 +252,50 @@ const TvDetails = () => {
             </div>
           </div>
         </div>
-        <div className="text-[#000] font-bold text-[32px] my-5 text-center">
-          Cast and Crew
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {castAndCrew.map((member: any) => (
-            <div key={member.id}>
-              <Image
-                src={
-                  member?.profilePath
-                    ? `https://image.tmdb.org/t/p/original${member.profilePath}`
-                    : assets.image.DUMMY
-                }
-                alt={member.name}
-                width={200}
-                height={200}
-                className="rounded-xl drop-shadow-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
-                onClick={() => {
-                  router.push(`/actors/${member.id}`);
-                }}
-              />
-              <p className="text-[20px] font-semibold">{member.name}</p>
-              <p className="text-[15px]">{member.character}</p>
+        {!isLoadingCrew ? (
+          <div className="w-full h-[280px] mt-20">
+            <Image
+              src={assets.icon.SPINNER}
+              alt="Loading..."
+              width={200}
+              height={200}
+              className="mx-auto"
+              loading="lazy"
+            />
+            <p className="text-center font-sans text-[18px] font-semibold">
+              Cast is getting ready ...
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="text-[#000] font-bold text-[32px] my-5 text-center">
+              Cast and Crew
             </div>
-          ))}
-        </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {castAndCrew.map((member: any) => (
+                <div key={member.id}>
+                  <Image
+                    src={
+                      member?.profilePath
+                        ? `https://image.tmdb.org/t/p/original${member.profilePath}`
+                        : assets.image.DUMMY
+                    }
+                    alt={member.name}
+                    width={200}
+                    height={200}
+                    className="rounded-xl drop-shadow-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
+                    onClick={() => {
+                      router.push(`/actors/${member.id}`);
+                    }}
+                  />
+                  <p className="text-[20px] font-semibold">{member.name}</p>
+                  <p className="text-[15px]">{member.character}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
         {isModalOpen && <TrailerModal />}
       </div>
     </div>
