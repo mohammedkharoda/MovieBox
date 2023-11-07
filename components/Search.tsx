@@ -1,8 +1,7 @@
 "use client";
-import React, { useState, useEffect, useDeferredValue } from "react";
-import { BiSearchAlt } from "react-icons/bi";
-import { useRouter } from "next/navigation";
 import { getSearchQuery } from "@/app/api/getSearchQuery";
+import { useRouter } from "next/navigation";
+import { useDeferredValue, useEffect, useState } from "react";
 
 interface SearchResult {
   id: number;

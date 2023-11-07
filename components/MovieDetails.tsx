@@ -138,10 +138,9 @@ const MovieDetails = () => {
             movieData?.poster_path ?? assets.image.DUMMY
           }`}
           alt={movieData?.title}
-          className="drop-shadow-2xl"
+          className="drop-shadow-2xl" 
         />
       </div>
-
       <div className="col-start-2 row-start-1 flex flex-col gap-4">
         <div className="flex justify-between w-fit gap-10 items-center">
           <div className="text-4xl font-bold">{movieData?.title}</div>
@@ -171,7 +170,6 @@ const MovieDetails = () => {
             )}
           </div>
         </div>
-
         <div className="flex gap-4">
           {movieData?.genres?.map((genre: any, index: number) => (
             <div key={index}>
