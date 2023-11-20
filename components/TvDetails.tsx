@@ -110,7 +110,7 @@ const TvDetails = () => {
   }
 
   return (
-    <div className="mt-[10rem] grid  grid-rows-1 gap-4 justify-items-center">
+    <div className="mt-[10rem] lg:grid gap-4 lg:justify-items-center flex flex-col items-center lg:items-start">
       <div className="w-[585px] h-[521px] relative rounded-xl">
         <Image
           fill
@@ -126,8 +126,8 @@ const TvDetails = () => {
           className="drop-shadow-2xl "
         />
       </div>
-      <div className="col-start-2 row-start-1 flex flex-col gap-4">
-        <div className="flex w-fit gap-5 items-center">
+      <div className="col-start-2 row-start-1 flex flex-col gap-4 items-center lg:items-start">
+        <div className="flex lg:flex-row justify-between w-fit gap-10 items-center flex-col">
           <div className="text-4xl font-bold">{seriesData?.name}</div>
           <div>
             <button
@@ -167,13 +167,13 @@ const TvDetails = () => {
         <div className="text-[20px] text-gray-800/80">
           {seriesData?.tagline}
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 text-center lg:text-left">
           <p className="uppercase text-[20px] text-[#000] font-semibold">
             Storyline
           </p>
           <div className="text-[18px]">{seriesData?.overview}</div>
         </div>
-        <div className="flex flex-row w-fit gap-10  ">
+        <div className="flex flex-row w-fit gap-10 flex-wrap mx-5 mt-5 lg:mx-0 lg:mt-0 ">
           <div className="flex flex-col w-fit gap-2">
             <div className="text-[20px] font-semibold mt-3">
               Production Company
@@ -267,7 +267,7 @@ const TvDetails = () => {
             </p>
           </div>
         ) : (
-          <>
+          <div className="flex flex-col gap-4 lg:w-full">
             <div className="text-[#000] font-bold text-[32px] my-5 text-center">
               Cast and Crew
             </div>
@@ -293,7 +293,7 @@ const TvDetails = () => {
                 </div>
               ))}
             </div>
-          </>
+          </div>
         )}
 
         {isModalOpen && <TrailerModal />}

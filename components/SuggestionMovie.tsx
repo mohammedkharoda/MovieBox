@@ -35,11 +35,10 @@ const SuggestionMovie = () => {
     }
   }, [params]);
 
-
   const displayedMovies = expanded ? movies : movies.slice(0, 8);
 
   return (
-    <div className="flex flex-col px-10 mt-[70px]">
+    <div className="flex flex-col px-10 mt-[70px] lg:text-left md:text-center">
       <div className="font-sans text-[36px] font-black">Recommanded Movie</div>
       {/*@ts-ignore*/}
       {isLoading ? (
@@ -54,7 +53,7 @@ const SuggestionMovie = () => {
           />
         </div>
       ) : (
-        <div className="flex gap-8 flex-wrap">
+        <div className="flex gap-8 flex-wrap justify-center lg:justify-normal">
           {displayedMovies.map((movie, index) => (
             <div className="flex flex-col" key={index}>
               <div className="h-[570px] w-[400px] relative mt-5">

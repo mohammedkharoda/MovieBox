@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import PeopleDetails from "@/components/PeopleDetails";
 import { StateType, usePeopleKeyStore } from "@/store/store";
+import Navbar from "@/components/Navbar";
 
 export default function Actors({ params }: any) {
   const setParams = usePeopleKeyStore(
@@ -13,6 +14,7 @@ export default function Actors({ params }: any) {
 
   return (
     <>
+      <Navbar />
       <PeopleDetails />
     </>
   );

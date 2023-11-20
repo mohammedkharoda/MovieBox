@@ -5,6 +5,7 @@ import CIRCLE from './images/circle.gif';
 import SPINNER from './images/Infinity.svg';
 import DUMMY from './images/dummy.jpg'
 import SEARCH from './images/search.gif'
+import MOBILE_VIEW from './images/animated.gif'
 export const assets = {
   icon: {
     ICON,
@@ -15,6 +16,7 @@ export const assets = {
   },
   image: {
     DEMO,
-    DUMMY
+    DUMMY,
+    MOBILE_VIEW
   },
 };

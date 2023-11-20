@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/Navbar";
 import SuggestionTv from "@/components/SuggestionTv";
 import TvDetails from "@/components/TvDetails";
 import { StateType, useTvParamsStore } from "@/store/store";
@@ -14,6 +15,7 @@ export default function Television({ params }: any) {
 
   return (
     <>
+      <Navbar />
       <TvDetails />
       <SuggestionTv />
     </>

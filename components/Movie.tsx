@@ -1,10 +1,10 @@
 "use client";
+import getMovieData from "@/app/api/getMovieData";
 import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/splide/dist/css/splide.min.css";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import getMovieData from "@/app/api/getMovieData";
 import { useEffect, useState } from "react";
 interface Movie {
   id: number;

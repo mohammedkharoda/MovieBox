@@ -128,7 +128,7 @@ const MovieDetails = () => {
   }
 
   return (
-    <div className="mt-[10rem] grid gap-4 justify-items-center">
+    <div className="mt-[10rem] lg:grid gap-4 lg:justify-items-center flex flex-col items-center lg:items-start">
       <div className="w-[585px] h-[521px] relative rounded-xl">
         <Image
           fill
@@ -138,11 +138,11 @@ const MovieDetails = () => {
             movieData?.poster_path ?? assets.image.DUMMY
           }`}
           alt={movieData?.title}
-          className="drop-shadow-2xl" 
+          className="drop-shadow-2xl"
         />
       </div>
-      <div className="col-start-2 row-start-1 flex flex-col gap-4">
-        <div className="flex justify-between w-fit gap-10 items-center">
+      <div className="col-start-2 row-start-1 flex flex-col gap-4 items-center lg:items-start">
+        <div className="flex lg:flex-row justify-between w-fit gap-10 items-center flex-col">
           <div className="text-4xl font-bold">{movieData?.title}</div>
           <div className="col-start-1 row-start-2 ">
             <button
@@ -180,13 +180,13 @@ const MovieDetails = () => {
           ))}
         </div>
         <div className="text-[20px] text-gray-800/80">{movieData?.tagline}</div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 text-center lg:text-left">
           <p className="uppercase text-[20px] text-[#000] font-semibold">
             Storyline
           </p>
           <div className="text-[18px]">{movieData?.overview}</div>
         </div>
-        <div className="flex flex-row w-fit gap-10  ">
+        <div className="flex flex-row w-fit gap-10 flex-wrap mx-5 mt-5 lg:mx-0 lg:mt-0">
           <div className="flex flex-col w-fit gap-2">
             <div className="text-[20px] font-semibold mt-3">
               Production Company
@@ -260,7 +260,7 @@ const MovieDetails = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 lg:w-full">
           <div className="mt-4 text-[28px] font-semibold text-[#000] text-center">
             Cast and Crew
           </div>

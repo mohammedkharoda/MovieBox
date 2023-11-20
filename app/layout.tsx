@@ -33,10 +33,7 @@ export default function RootLayout({
           />
         </head>
         <body className={dm_sans.className}>
-          <>
-            <Navbar />
-            {children}
-          </>
+          <>{children}</>
         </body>
       </html>
     </ClerkProvider>

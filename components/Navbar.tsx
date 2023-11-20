@@ -36,7 +36,7 @@ const Navbar = () => {
               </p>
             </div>
           </Link>
-          <div className="w-auto">
+          <div className="w-auto lg:block hidden">
             <Search />
           </div>
           <div>
