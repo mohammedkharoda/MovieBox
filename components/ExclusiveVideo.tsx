@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { fetchMovieId, fetchVideo } from "@/app/api/getTrailerData";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
-import Image from "next/image";
-import { assets } from "@/public/assets";
-import { fetchMovieId, fetchVideo } from "@/app/api/getTrailerData";
+import { useEffect, useState } from "react";
+import Loading from "./Loading";
 const ExclusiveVideo = () => {
   const [movieIds, setMovieIds] = useState<any>();
   const [videos, setVideos] = useState<any>([]);
@@ -73,14 +72,7 @@ const ExclusiveVideo = () => {
         </Splide>
       ) : (
         <div className="w-full h-[280px]">
-          <Image
-            src={assets.icon.SPINNER}
-            alt="Loading..."
-            width={200}
-            height={200}
-            className="mx-auto"
-            loading="lazy"
-          />
+          <Loading />
         </div>
       )}
     </div>

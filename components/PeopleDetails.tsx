@@ -4,6 +4,7 @@ import { usePeopleKeyStore } from "@/store/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 interface People {
   name: string;
@@ -68,14 +69,7 @@ const PeopleDetails = () => {
   ) {
     return (
       <div className="w-full h-[280px] mt-20">
-        <Image
-          src={assets.icon.SPINNER}
-          alt="Loading..."
-          width={200}
-          height={200}
-          className="mx-auto"
-          loading="lazy"
-        />
+        <Loading/>
         <p className="text-center font-sans text-[18px] font-semibold">
           Get your favorite Actor in a sec ...
         </p>

@@ -4,6 +4,7 @@ import { useMovieParamsStore } from "@/store/store";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 interface Movie {
   id: number;
@@ -43,14 +44,7 @@ const SuggestionMovie = () => {
       {/*@ts-ignore*/}
       {isLoading ? (
         <div className="w-full h-[280px]">
-          <Image
-            src={assets.icon.SPINNER}
-            alt="Loading..."
-            width={200}
-            height={200}
-            className="mx-auto"
-            loading="lazy"
-          />
+         <Loading/>
         </div>
       ) : (
         <div className="flex gap-8 flex-wrap justify-center lg:justify-normal">

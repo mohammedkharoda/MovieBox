@@ -6,6 +6,7 @@ import "@splidejs/splide/dist/css/splide.min.css";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "./Loading";
 interface Movie {
   id: number;
   backdrop_path: string | null;
@@ -109,14 +110,7 @@ const MovieDetails = () => {
         </Splide>
       ) : (
         <div className="w-full h-[280px] mt-20">
-          <Image
-            src={assets.icon.SPINNER}
-            alt="Loading..."
-            width={200}
-            height={200}
-            className="mx-auto"
-            loading="lazy"
-          />
+          <Loading />
         </div>
       )}
     </div>

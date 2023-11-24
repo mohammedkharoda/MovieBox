@@ -6,6 +6,7 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useRouter } from "next/navigation";
 import getUpcomingData from "@/app/api/getUpcomingData";
 import { PiWarningCircleBold } from "react-icons/pi";
+import Loading from "./Loading";
 interface Movie {
   id: number;
   poster_path: string | null;
@@ -59,14 +60,7 @@ const UpcomingMovieCard = () => {
       {/*@ts-ignore*/}
       {isLoading ? (
         <div className="w-full h-[280px]">
-          <Image
-            src={assets.icon.SPINNER}
-            alt="Loading..."
-            width={200}
-            height={200}
-            className="mx-auto"
-            loading="lazy"
-          />
+          <Loading />
           <p className="font-sans font-semibold text-[18px]">
             Upcoming Movies in 3...2...1
           </p>

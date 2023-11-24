@@ -19,6 +19,7 @@
     "autoprefixer": "10.4.16",
     "eslint": "8.52.0",
     "eslint-config-next": "13.5.6",
+    "ldrs": "^1.0.1",
     "next": "13.5.6",
     "node-vibrant": "^3.2.1-alpha.1",
     "postcss": "8.4.31",

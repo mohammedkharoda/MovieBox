@@ -19,6 +19,8 @@ import {
 } from "@/app/api/getTvDetails";
 import { useRouter } from "next/navigation";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import Loading from "./Loading";
+import { PiWarningCircleBold } from "react-icons/pi";
 const TvDetails = () => {
   const [seriesData, setseriesData] = useState<any>(null);
   const params = useTvParamsStore((state) => state.params);
@@ -94,14 +96,7 @@ const TvDetails = () => {
   if (!seriesData && !seriesData?.poster_path) {
     return (
       <div className="w-full h-[280px] mt-20">
-        <Image
-          src={assets.icon.SPINNER}
-          alt="Loading..."
-          width={200}
-          height={200}
-          className="mx-auto"
-          loading="lazy"
-        />
+        <Loading />
         <p className="text-center font-sans text-[18px] font-semibold">
           Your Series will there be in a min...
         </p>
@@ -120,7 +115,7 @@ const TvDetails = () => {
           src={
             seriesData?.poster_path
               ? `https://image.tmdb.org/t/p/original${seriesData?.poster_path}`
-              : assets.image.DUMMY
+              : `${(<Loading />)}`
           }
           alt={seriesData?.title}
           className="drop-shadow-2xl "
@@ -247,21 +242,21 @@ const TvDetails = () => {
               <LiaImdb size={26} />
               <div className="text-[20px] font-semibold">Rating</div>
             </div>
-            <div className="text-[20px] font-bold">
-              {seriesData?.vote_average?.toFixed(1)}
-            </div>
+            {seriesData?.vote_average?.toFixed(1) === "0.0" ? (
+              <>
+                <p className=" bg-orange-400 px-3 py-2 rounded-full text-black font-semibold text-[16px] flex items-center gap-2">
+                  <PiWarningCircleBold size={26} />
+                  Yet to be released
+                </p>
+              </>
+            ) : (
+              seriesData?.vote_average?.toFixed(1) + "/10"
+            )}
           </div>
         </div>
         {!isLoadingCrew ? (
           <div className="w-full h-[280px] mt-20">
-            <Image
-              src={assets.icon.SPINNER}
-              alt="Loading..."
-              width={200}
-              height={200}
-              className="mx-auto"
-              loading="lazy"
-            />
+            <Loading />
             <p className="text-center font-sans text-[18px] font-semibold">
               Cast is getting ready ...
             </p>

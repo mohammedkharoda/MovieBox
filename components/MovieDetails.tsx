@@ -21,6 +21,7 @@ import {
 } from "@/app/api/getMovieDetails";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import Loading from "./Loading";
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState<any>(null);
   const params = useMovieParamsStore((state) => state.params);
@@ -86,14 +87,7 @@ const MovieDetails = () => {
   if (!movieData && !movieData?.poster_path) {
     return (
       <div className="w-full h-[280px] mt-20">
-        <Image
-          src={assets.icon.SPINNER}
-          alt="Loading..."
-          width={200}
-          height={200}
-          className="mx-auto"
-          loading="lazy"
-        />
+        <Loading />
         <p className="text-center font-sans text-[18px] font-semibold">
           Your Movie will there be in a min...
         </p>

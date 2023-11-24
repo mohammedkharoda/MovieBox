@@ -5,6 +5,7 @@ import { assets } from "@/public/assets";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import { useRouter } from "next/navigation";
 import getNewArrivalData from "@/app/api/getNewArrivalData";
+import Loading from "./Loading";
 interface Movie {
   id: number;
   poster_path: string | null;
@@ -69,14 +70,7 @@ const NewArrival = () => {
       {/*@ts-ignore*/}
       {loading ? (
         <div className="w-full h-[280px]">
-          <Image
-            src={assets.icon.SPINNER}
-            alt="Loading..."
-            width={200}
-            height={200}
-            className="mx-auto"
-            loading="lazy"
-          />
+          <Loading />
         </div>
       ) : (
         // @ts-ignore

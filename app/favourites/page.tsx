@@ -1,4 +1,5 @@
 "use client";
+import Navbar from "@/components/Navbar";
 import { assets } from "@/public/assets";
 import { useLikedMoviesStore } from "@/store/store";
 import { auth, useAuth } from "@clerk/nextjs";
@@ -22,6 +23,7 @@ const FavouriteMovies = () => {
   console.log(userId);
   return (
     <>
+      <Navbar />
       {likedMoviesStore.likedMovies.length <= 0 ? (
         <div className="mt-[10rem] mx-auto">
           <p className="text-center font-sans text-[30px]">
@@ -36,36 +38,41 @@ const FavouriteMovies = () => {
           />
         </div>
       ) : (
-        <div className="mt-[10rem] flex gap-[10px]">
-          {likedMovies.map((movie: any) => (
-            <div
-              key={movie.id}
-              className=" rounded-xl flex flex-col items-center gap-4 w-fit"
-            >
-              <div className="w-[585px] h-[521px] relative rounded-xl">
-                <Image
-                  src={`https://image.tmdb.org/t/p/original${
-                    movie?.poster_path ?? assets.image.DUMMY
-                  }`}
-                  fill
-                  objectFit="contain"
-                  loading="lazy"
-                  alt={movie?.title}
-                  className="drop-shadow-2xl rounded-lg hover:scale-105 transition ease-in-out duration-200 hover:cursor-pointer"
-                  onClick={() =>
-                    handleImageClick(
-                      movie.id,
-                      !!movie.seasons || movie.type === "Miniseries"
-                    )
-                  }
-                />
+        <>
+          <div className="text-2xl font-bold mt-[10rem] mb-[5rem] text-center">
+            Favourite Movies 🍿
+          </div>
+          <div className="flex gap-[10px]">
+            {likedMovies.map((movie: any) => (
+              <div
+                key={movie.id}
+                className=" rounded-xl flex flex-col items-center gap-4 w-fit"
+              >
+                <div className="w-[585px] h-[521px] relative rounded-xl">
+                  <Image
+                    src={`https://image.tmdb.org/t/p/original${
+                      movie?.poster_path ?? assets.image.DUMMY
+                    }`}
+                    fill
+                    objectFit="contain"
+                    loading="lazy"
+                    alt={movie?.title}
+                    className="drop-shadow-2xl rounded-lg hover:scale-105 transition ease-in-out duration-200 hover:cursor-pointer"
+                    onClick={() =>
+                      handleImageClick(
+                        movie.id,
+                        !!movie.seasons || movie.type === "Miniseries"
+                      )
+                    }
+                  />
+                </div>
+                <p className="font-bold text-[25px] font-sans">
+                  {movie?.title ? movie?.title : movie.name}
+                </p>
               </div>
-              <p className="font-bold text-[25px] font-sans">
-                {movie?.title ? movie?.title : movie.name}
-              </p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </>
   );
