@@ -1,10 +1,12 @@
 "use client";
-import Navbar from "@/components/Navbar";
 import SuggestionTv from "@/components/SuggestionTv";
 import TvDetails from "@/components/TvDetails";
 import { StateType, useTvParamsStore } from "@/store/store";
+import dynamic from "next/dynamic";
 import { useEffect } from "react";
 
+export const revalidation = 0;
+const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 export default function Television({ params }: any) {
   const setParams = useTvParamsStore(
     (state: StateType) => state.setParams as any

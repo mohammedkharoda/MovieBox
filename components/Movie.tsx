@@ -23,10 +23,16 @@ const MovieDetails = () => {
   useEffect(() => {
     async function fetchData() {
       try {
+        setImagesLoaded(false);
         const data = await getMovieData();
         setMovieData(data);
+        setImagesLoaded(true);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setImagesLoaded(false);
+      }
+      finally {
+        setImagesLoaded(true);
       }
     }
 
@@ -56,7 +62,11 @@ const MovieDetails = () => {
   return (
     <div className="relative">
       {!imagesLoaded ? (
-        // @ts-ignore
+        <div className="w-full h-[280px] mt-20">
+          <Loading />
+        </div>
+      ) : (
+          // @ts-ignore
         <Splide options={splideOptions}>
           {movieData &&
             movieData?.length > 0 &&
@@ -108,10 +118,7 @@ const MovieDetails = () => {
               </SplideSlide>
             ))}
         </Splide>
-      ) : (
-        <div className="w-full h-[280px] mt-20">
-          <Loading />
-        </div>
+
       )}
     </div>
   );

@@ -1,12 +1,15 @@
 "use client";
-import Navbar from "@/components/Navbar";
 import { assets } from "@/public/assets";
 import { useLikedMoviesStore } from "@/store/store";
 import { auth, useAuth } from "@clerk/nextjs";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
+
+export const revalidation = 0;
+const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const FavouriteMovies = () => {
   const likedMoviesStore = useLikedMoviesStore() as unknown as any;
   const likedMovies = likedMoviesStore.likedMovies;

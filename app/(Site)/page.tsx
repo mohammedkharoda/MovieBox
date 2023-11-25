@@ -12,7 +12,7 @@ import Image from "next/image";
 import { assets } from "@/public/assets";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
-
+export const revalidation = 0;
 export default function Home() {
   const [isMobileView, setIsMobileView] = useState(false);
 
