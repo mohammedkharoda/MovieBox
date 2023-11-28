@@ -4,7 +4,7 @@ import PeopleDetails from "@/components/PeopleDetails";
 import { StateType, usePeopleKeyStore } from "@/store/store";
 import dynamic from "next/dynamic";
 
-export const revalidation = 0;
+
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 export default function Actors({ params }: any) {
   const setParams = usePeopleKeyStore(

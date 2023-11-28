@@ -5,7 +5,6 @@ import { StateType, useTvParamsStore } from "@/store/store";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
 
-export const revalidation = 0;
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 export default function Television({ params }: any) {
   const setParams = useTvParamsStore(

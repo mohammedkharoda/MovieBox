@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import React, {useEffect, useState} from "react";
 
 
-export const revalidation = 0;
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const FavouriteMovies = () => {
   const likedMoviesStore = useLikedMoviesStore() as unknown as any;
