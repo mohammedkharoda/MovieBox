@@ -83,6 +83,8 @@ const MovieDetails = () => {
                     }}
                     fill
                     loading="lazy"
+                    placeholder='blur'
+                    blurDataURL={movie?.backdrop_path || movie?.poster_path}
                   />
                   <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60" />
                 </div>

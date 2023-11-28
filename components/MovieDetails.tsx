@@ -31,6 +31,8 @@ const MovieDetails = () => {
     (state) => state.setTrailerKey as unknown as any
   );
 
+
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const likedMoviesStore = useLikedMoviesStore() as unknown as any;
@@ -39,13 +41,18 @@ const MovieDetails = () => {
     setIsModalOpen(true);
   };
   const handleLikeButtonClick = () => {
-    if (likedMoviesStore.likedMovies.includes(movieData)) {
+    const isMovieLiked = likedMoviesStore.likedMovies.some(
+        (likedMovie: any) => likedMovie.id === movieData.id
+    );
+
+    if (isMovieLiked) {
       likedMoviesStore.removeLikedMovie(movieData);
     } else {
-      likedMoviesStore?.addLikedMovie(movieData);
+      likedMoviesStore.addLikedMovie(movieData);
     }
   };
-  const isLiked = likedMoviesStore.likedMovies.includes(movieData);
+
+  const isLiked = movieData && likedMoviesStore.likedMovies.some((likedMovie: any) => likedMovie.id === movieData.id);
   useEffect(() => {
     if (params) {
       fetchMovieVideos(params)
@@ -122,164 +129,177 @@ const MovieDetails = () => {
   }
 
   return (
-    <div className="mt-[10rem] lg:grid gap-4 lg:justify-items-center flex flex-col items-center lg:items-start">
-      <div className="w-[585px] h-[521px] relative rounded-xl">
-        <Image
-          fill
-          objectFit="contain"
-          loading="lazy"
-          src={`https://image.tmdb.org/t/p/original${
-            movieData?.poster_path ?? assets.image.DUMMY
-          }`}
-          alt={movieData?.title}
-          className="drop-shadow-2xl"
-        />
-      </div>
-      <div className="col-start-2 row-start-1 flex flex-col gap-4 items-center lg:items-start">
-        <div className="flex lg:flex-row justify-between w-fit gap-10 items-center flex-col">
-          <div className="text-4xl font-bold">{movieData?.title}</div>
-          <div className="col-start-1 row-start-2 ">
-            <button
-              className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
-              onClick={handleWatchTrailer}
-            >
-              <RiMovie2Line size={26} />
-              Watch Trailer
-            </button>
-          </div>
-          <div>
-            {isLiked ? (
-              <AiFillHeart
-                size={26}
-                color="red"
-                onClick={handleLikeButtonClick}
-                className="cursor-pointer"
-              />
-            ) : (
-              <AiOutlineHeart
-                size={26}
-                onClick={handleLikeButtonClick}
-                className="cursor-pointer"
-              />
-            )}
-          </div>
-        </div>
-        <div className="flex gap-4">
-          {movieData?.genres?.map((genre: any, index: number) => (
-            <div key={index}>
-              <p className="text-[15px] text-gray-800/80 uppercase">
-                {genre?.name}
+      <>
+        {!movieData && !movieData?.poster_path ? (
+            <div className="w-full h-[280px] mt-20">
+              <Loading />
+              <p className="text-center font-sans text-[18px] font-semibold">
+                Your Movie will there be in a min...
               </p>
             </div>
-          ))}
-        </div>
-        <div className="text-[20px] text-gray-800/80">{movieData?.tagline}</div>
-        <div className="flex flex-col gap-2 text-center lg:text-left">
-          <p className="uppercase text-[20px] text-[#000] font-semibold">
-            Storyline
-          </p>
-          <div className="text-[18px]">{movieData?.overview}</div>
-        </div>
-        <div className="flex flex-row w-fit gap-10 flex-wrap mx-5 mt-5 lg:mx-0 lg:mt-0">
-          <div className="flex flex-col w-fit gap-2">
-            <div className="text-[20px] font-semibold mt-3">
-              Production Company
-            </div>
-            {movieData?.production_companies?.map(
-              (company: any, index: number) => (
-                <p
-                  className="font-bold text-[22px] uppercase underline underline-offset-8"
-                  key={index}
-                >
-                  {company?.name}
-                </p>
-              )
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 ">
-              <HiMiniLanguage size={26} />
-              <p className="font-semibold text-[20px]">Languages</p>
-            </div>
-            {movieData?.spoken_languages?.length > 0 ? (
-              movieData?.spoken_languages.map(
-                (language: any, index: number) => (
-                  <div key={index}>
-                    <p className="font-bold text-[28px]">
-                      {language?.name || "No language found"}
-                    </p>
+        ):(
+            <>
+              <div className="mt-[10rem] lg:grid gap-4 lg:justify-items-center flex flex-col items-center lg:items-start">
+                <div className="w-[585px] h-[521px] relative rounded-xl">
+                  <Image
+                      fill
+                      objectFit="contain"
+                      loading="lazy"
+                      src={`https://image.tmdb.org/t/p/original${
+                          movieData?.poster_path ?? assets.image.DUMMY
+                      }`}
+                      alt={movieData?.title}
+                      className="drop-shadow-2xl"
+                  />
+                </div>
+                <div className="col-start-2 row-start-1 flex flex-col gap-4 items-center lg:items-start">
+                  <div className="flex lg:flex-row justify-between w-fit gap-10 items-center flex-col">
+                    <div className="text-4xl font-bold">{movieData?.title}</div>
+                    <div className="col-start-1 row-start-2 ">
+                      <button
+                          className="bg-blue-900 text-white shadow-lg  transition ease-in-out delay-150 hover:bg-black px-10 py-3 rounded-xl hover:scale-110 flex gap-3"
+                          onClick={handleWatchTrailer}
+                      >
+                        <RiMovie2Line size={26} />
+                        Watch Trailer
+                      </button>
+                    </div>
+                    <div>
+                      {isLiked ? (
+                          <AiFillHeart
+                              size={26}
+                              color="red"
+                              onClick={handleLikeButtonClick}
+                              className="cursor-pointer"
+                          />
+                      ) : (
+                          <AiOutlineHeart
+                              size={26}
+                              onClick={handleLikeButtonClick}
+                              className="cursor-pointer"
+                          />
+                      )}
+                    </div>
                   </div>
-                )
-              )
-            ) : (
-              <div>
-                <p className="font-bold text-[28px]">No language found</p>
+                  <div className="flex gap-4">
+                    {movieData?.genres?.map((genre: any, index: number) => (
+                        <div key={index}>
+                          <p className="text-[15px] text-gray-800/80 uppercase">
+                            {genre?.name}
+                          </p>
+                        </div>
+                    ))}
+                  </div>
+                  <div className="text-[20px] text-gray-800/80">{movieData?.tagline}</div>
+                  <div className="flex flex-col gap-2 text-center lg:text-left">
+                    <p className="uppercase text-[20px] text-[#000] font-semibold">
+                      Storyline
+                    </p>
+                    <div className="text-[18px]">{movieData?.overview}</div>
+                  </div>
+                  <div className="flex flex-row w-fit gap-10 flex-wrap mx-5 mt-5 lg:mx-0 lg:mt-0">
+                    <div className="flex flex-col w-fit gap-2">
+                      <div className="text-[20px] font-semibold mt-3">
+                        Production Company
+                      </div>
+                      {movieData?.production_companies?.map(
+                          (company: any, index: number) => (
+                              <p
+                                  className="font-bold text-[22px] uppercase underline underline-offset-8"
+                                  key={index}
+                              >
+                                {company?.name}
+                              </p>
+                          )
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2 ">
+                        <HiMiniLanguage size={26} />
+                        <p className="font-semibold text-[20px]">Languages</p>
+                      </div>
+                      {movieData?.spoken_languages?.length > 0 ? (
+                          movieData?.spoken_languages.map(
+                              (language: any, index: number) => (
+                                  <div key={index}>
+                                    <p className="font-bold text-[28px]">
+                                      {language?.name || "No language found"}
+                                    </p>
+                                  </div>
+                              )
+                          )
+                      ) : (
+                          <div>
+                            <p className="font-bold text-[28px]">No language found</p>
+                          </div>
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <BiTime size={26} />
+                        <p className="text-[20px] font-semibold">Runtime</p>
+                      </div>
+                      <p className="text-[18px] font-bold text-center">
+                        {convertToHoursAndMinutes(movieData?.runtime)}
+                      </p>
+                    </div>
+                    <div className="gap-2 flex flex-col">
+                      <div className="flex items-center gap-2">
+                        <LiaImdb size={26} />
+                        <div className="text-[20px] font-semibold">Rating</div>
+                      </div>
+                      <p className="text-[20px] text-[#000] font-bold">
+                        {movieData.vote_average.toFixed(1) === "0.0" ? (
+                            <>
+                              <p className=" bg-orange-400 px-3 py-2 rounded-full text-black font-semibold text-[16px] flex items-center gap-2">
+                                <PiWarningCircleBold size={26} />
+                                Yet to be released
+                              </p>
+                            </>
+                        ) : (
+                            movieData.vote_average.toFixed(1) + "/10"
+                        )}
+                      </p>
+                    </div>
+                    <div className="gap-2 flex flex-col">
+                      <div className="flex items-center gap-2">
+                        <BsCalendar2 size={36} />
+                        <div className="text-[20px] font-semibold">Release Date</div>
+                      </div>
+                      <div className="text-[18px] font-bold text-center">
+                        {formatDate(movieData?.release_date)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-4 lg:w-full">
+                    <div className="mt-4 text-[28px] font-semibold text-[#000] text-center">
+                      Cast and Crew
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                      {castAndCrew.map((member: any) => (
+                          <div key={member.id}>
+                            <Image
+                                src={`https://image.tmdb.org/t/p/original${member.profilePath}`}
+                                alt={member.name}
+                                width={200}
+                                height={200}
+                                className="rounded-xl drop-shadow-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
+                                onClick={() => {
+                                  router.push(`/actors/${member.id}`);
+                                }}
+                            />
+                            <p className="text-[20px] font-semibold">{member.name}</p>
+                            <p className="text-[15px]">{member.character}</p>
+                          </div>
+                      ))}
+                    </div>
+                  </div>
+                  {isModalOpen && <TrailerModal />}
+                </div>
               </div>
-            )}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <BiTime size={26} />
-              <p className="text-[20px] font-semibold">Runtime</p>
-            </div>
-            <p className="text-[18px] font-bold text-center">
-              {convertToHoursAndMinutes(movieData?.runtime)}
-            </p>
-          </div>
-          <div className="gap-2 flex flex-col">
-            <div className="flex items-center gap-2">
-              <LiaImdb size={26} />
-              <div className="text-[20px] font-semibold">Rating</div>
-            </div>
-            <p className="text-[20px] text-[#000] font-bold">
-              {movieData.vote_average.toFixed(1) === "0.0" ? (
-                <>
-                  <p className=" bg-orange-400 px-3 py-2 rounded-full text-black font-semibold text-[16px] flex items-center gap-2">
-                    <PiWarningCircleBold size={26} />
-                    Yet to be released
-                  </p>
-                </>
-              ) : (
-                movieData.vote_average.toFixed(1) + "/10"
-              )}
-            </p>
-          </div>
-          <div className="gap-2 flex flex-col">
-            <div className="flex items-center gap-2">
-              <BsCalendar2 size={36} />
-              <div className="text-[20px] font-semibold">Release Date</div>
-            </div>
-            <div className="text-[18px] font-bold text-center">
-              {formatDate(movieData?.release_date)}
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4 lg:w-full">
-          <div className="mt-4 text-[28px] font-semibold text-[#000] text-center">
-            Cast and Crew
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {castAndCrew.map((member: any) => (
-              <div key={member.id}>
-                <Image
-                  src={`https://image.tmdb.org/t/p/original${member.profilePath}`}
-                  alt={member.name}
-                  width={200}
-                  height={200}
-                  className="rounded-xl drop-shadow-xl cursor-pointer hover:scale-105 transition ease-in-out duration-200"
-                  onClick={() => {
-                    router.push(`/actors/${member.id}`);
-                  }}
-                />
-                <p className="text-[20px] font-semibold">{member.name}</p>
-                <p className="text-[15px]">{member.character}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        {isModalOpen && <TrailerModal />}
-      </div>
-    </div>
+            </>
+        ) }
+      </>
   );
 };
 
