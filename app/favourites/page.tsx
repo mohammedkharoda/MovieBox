@@ -1,12 +1,11 @@
 "use client";
 import { assets } from "@/public/assets";
 import { useLikedMoviesStore } from "@/store/store";
-import { auth, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, {useEffect, useState} from "react";
-
+import { useEffect, useState } from "react";
 
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const FavouriteMovies = () => {
@@ -21,9 +20,9 @@ const FavouriteMovies = () => {
     }
   };
   const { userId } = useAuth();
-  const [isClient,setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
   useEffect(() => {
-    setIsClient(true)
+    setIsClient(true);
   }, []);
   return (
     <>
