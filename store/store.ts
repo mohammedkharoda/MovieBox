@@ -33,19 +33,48 @@ const usePeopleKeyStore = create<StateType>((set) => ({
 
 
 const useLikedMoviesStore = create<any>(persist((set) => ({
-  likedMovies: [],
+  likedMovies: (() => {
+    try {
+      const storedData = localStorage.getItem('likedMovies');
+      return storedData ? JSON.parse(storedData) : [];
+    } catch (error) {
+      console.error('Error parsing likedMovies from localStorage:', error);
+      return [];
+    }
+  })(),
+
   addLikedMovie: (movie: any) => {
-    set((state: any) => ({
-      likedMovies: [...state.likedMovies, movie],
-    }));
+    set((state: any) => {
+      try {
+        if (!state.likedMovies.some((m: any) => m.id === movie.id)) {
+          const updatedLikedMovies = [...state.likedMovies, movie];
+          localStorage.setItem('likedMovies', JSON.stringify(updatedLikedMovies));
+          console.log('Liked Movie Added:', updatedLikedMovies);
+          return { likedMovies: updatedLikedMovies };
+        }
+      } catch (error) {
+        console.error('Error adding likedMovie:', error);
+      }
+      return state;
+    });
   },
 
   removeLikedMovie: (movie: any) => {
-    set((state: any) => ({
-      likedMovies: state.likedMovies.filter((id: number) => id !== movie),
-    }));
+    set((state: any) => {
+      try {
+        const updatedLikedMovies = state.likedMovies.filter((m: any) => m.id !== movie.id);
+        localStorage.setItem('likedMovies', JSON.stringify(updatedLikedMovies));
+        console.log('Liked Movie Removed:', updatedLikedMovies);
+        return { likedMovies: updatedLikedMovies };
+      } catch (error) {
+        console.error('Error removing likedMovie:', error);
+      }
+      return state;
+    });
   },
 }), {
   name: 'likedMovies',
+  getStorage: () => localStorage,
 }));
+
 export { useMovieParamsStore, useTvParamsStore, useTrailerKeyStore, usePeopleKeyStore, useLikedMoviesStore }

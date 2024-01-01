@@ -3,6 +3,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
+import { dark } from '@clerk/themes';
+import {BaseTheme} from "@clerk/types";
 const dm_sans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,7 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={
+      {baseTheme:[dark] as unknown as undefined}
+    }>
       <html lang="en">
         <head>
           <link

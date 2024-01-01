@@ -1,9 +1,15 @@
 import { authMiddleware } from "@clerk/nextjs";
+const protectedRoutes = [
+    'movie/[id]',
+    'tv/[id]',
+    'favourites/[id]',
+    'actors/[id]',
+];
 export default authMiddleware({
-  // "/" will be accessible to all users
-  publicRoutes: ["/"]
+    publicRoutes: ["/"],
 });
- 
+
+
 export const config = {
       matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
 };

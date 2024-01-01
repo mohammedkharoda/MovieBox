@@ -1,19 +1,16 @@
 "use client";
 import { assets } from "@/public/assets";
 import { useLikedMoviesStore } from "@/store/store";
-import { auth, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import { useEffect, useState } from "react";
 
-
-export const revalidation = 0;
 const Navbar = dynamic(() => import("@/components/Navbar"), { ssr: false });
 const FavouriteMovies = () => {
   const likedMoviesStore = useLikedMoviesStore() as unknown as any;
   const likedMovies = likedMoviesStore.likedMovies;
-  console.log(likedMovies);
   const router = useRouter();
   const handleImageClick = (id: number, isMovie: boolean) => {
     if (!isMovie) {
@@ -23,7 +20,10 @@ const FavouriteMovies = () => {
     }
   };
   const { userId } = useAuth();
-  console.log(userId);
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
     <>
       <Navbar />
@@ -42,13 +42,13 @@ const FavouriteMovies = () => {
         </div>
       ) : (
         <>
-          <div className="text-2xl font-bold mt-[10rem] mb-[5rem] text-center">
-            Favourite Movies 🍿
+          <div className="text-3xl underline font-bold mt-[10rem] mb-[5rem] text-center">
+            Favourite Movies
           </div>
           <div className="flex gap-[10px]">
             {likedMovies.map((movie: any) => (
               <div
-                key={movie.id}
+                key={movie?.id}
                 className=" rounded-xl flex flex-col items-center gap-4 w-fit"
               >
                 <div className="w-[585px] h-[521px] relative rounded-xl">
@@ -63,14 +63,14 @@ const FavouriteMovies = () => {
                     className="drop-shadow-2xl rounded-lg hover:scale-105 transition ease-in-out duration-200 hover:cursor-pointer"
                     onClick={() =>
                       handleImageClick(
-                        movie.id,
-                        !!movie.seasons || movie.type === "Miniseries"
+                        movie?.id,
+                        !!movie?.seasons || movie?.type === "Miniseries"
                       )
                     }
                   />
                 </div>
                 <p className="font-bold text-[25px] font-sans">
-                  {movie?.title ? movie?.title : movie.name}
+                  {movie?.title ? movie?.title : movie?.name}
                 </p>
               </div>
             ))}
