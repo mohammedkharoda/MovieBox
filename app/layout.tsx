@@ -7,7 +7,7 @@ const dm_sans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MovieBox",
-  description: "A Movie and TV Series Search Engine",
+  description: "A Movie and TV Series Search Engine and Enjoyment Place",
 };
 
 export default function RootLayout({
